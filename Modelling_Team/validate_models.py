@@ -31,14 +31,13 @@ document_store = ElasticsearchDocumentStore(
 from haystack.nodes import PreProcessor
 
 preprocessor = PreProcessor(
-        clean_empty_lines=True,
-        clean_whitespace=True,
-        clean_header_footer=False,
-        split_by="word",
-        split_length=200,
-        split_overlap=0,
-        split_respect_sentence_boundary=False,
-    )
+    split_by="word",
+    split_length=200,
+    split_overlap=0,
+    split_respect_sentence_boundary=False,
+    clean_empty_lines=False,
+    clean_whitespace=False,
+)
 document_store.delete_documents(index=doc_index)
 document_store.delete_documents(index=label_index)
 
