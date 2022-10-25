@@ -38,6 +38,7 @@ preprocessor = PreProcessor(
         split_length=200,
         split_overlap=30,
         split_respect_sentence_boundary=False,
+
     )
 document_store.delete_documents(index=doc_index)
 document_store.delete_documents(index=label_index)
