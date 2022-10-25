@@ -95,3 +95,13 @@ print(f'Retriever - Mean Average Precision: {metrics["Retriever"]["map"]}')
 
 print(f'Reader - F1-Score: {metrics["Reader"]["f1"]}')
 print(f'Reader - Exact Match: {metrics["Reader"]["exact_match"]}')
+
+
+
+
+advanced_eval_result = pipeline.eval(
+    labels=eval_labels, params={"Retriever": {"top_k": 5}}, sas_model_name_or_path="cross-encoder/stsb-roberta-large"
+)
+
+metrics = advanced_eval_result.calculate_metrics()
+print(metrics["Reader"]["sas"])
