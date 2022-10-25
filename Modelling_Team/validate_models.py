@@ -36,9 +36,8 @@ preprocessor = PreProcessor(
         clean_header_footer=False,
         split_by="word",
         split_length=200,
-        split_overlap=30,
+        split_overlap=0,
         split_respect_sentence_boundary=False,
-
     )
 document_store.delete_documents(index=doc_index)
 document_store.delete_documents(index=label_index)
