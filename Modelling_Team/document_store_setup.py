@@ -3,7 +3,8 @@ import logging
 logging.basicConfig(format="%(levelname)s - %(name)s -  %(message)s", level=logging.WARNING)
 logging.getLogger("haystack").setLevel(logging.INFO)
 
-
+# Elasticsearch Docker container has to be running
+# docker run -d -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node" elasticsearch:7.5.1
 
 import os
 from haystack.document_stores import ElasticsearchDocumentStore
