@@ -79,10 +79,10 @@ eval_labels = document_store.get_all_labels_aggregated(drop_negative_labels=True
 eval_result = pipeline.eval(labels=eval_labels, params={"Retriever": {"top_k": 5}})
 
 retriever_result = eval_result["Retriever"]
-retriever_result.head()
+print(retriever_result.head())
 
 reader_result = eval_result["Reader"]
-reader_result.head()
+print(reader_result.head())
 
 
 
