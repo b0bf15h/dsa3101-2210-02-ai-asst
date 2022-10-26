@@ -22,13 +22,9 @@ library(httr)
 library(jsonlite)
 library(RColorBrewer)
 library(renv)
-<<<<<<< HEAD
-renv::init()
-=======
 library(bslib)
 
 renv::init(bare=TRUE)
->>>>>>> 59043f879afe688a567b4e4ea3083939f21e88c3
 renv:snapshot()
 renv:status()
 
