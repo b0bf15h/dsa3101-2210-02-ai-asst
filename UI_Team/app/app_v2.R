@@ -5,6 +5,7 @@ library(httr)
 library(jsonlite)
 library(RColorBrewer)
 library(shinyalert)
+library(DT)
 
 flask_url <- "http://flask:5000/"
 model <- list(
