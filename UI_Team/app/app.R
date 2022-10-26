@@ -1,3 +1,4 @@
+
 #
 # This is a Shiny web application. You can run the application by clicking
 # the 'Run App' button above.
@@ -13,6 +14,7 @@ install.packages("httr")
 install.packages("jsonlite")
 install.packages("RColorBrewer")
 install.packages("renv")
+
 library(shiny)
 library(tidyverse)
 library(plotly)
@@ -20,13 +22,21 @@ library(httr)
 library(jsonlite)
 library(RColorBrewer)
 library(renv)
+<<<<<<< HEAD
 renv::init()
+=======
+library(bslib)
+
+renv::init(bare=TRUE)
+>>>>>>> 59043f879afe688a567b4e4ea3083939f21e88c3
 renv:snapshot()
 renv:status()
 
 flask_url <- "http://flask:5000/"
 
 ui <- fluidPage(
+  
+  theme = bs_theme(version = 4, booswatch = "minty"),
   
   #Application title
   titlePanel("AI Assistant for Medical Sales Representative"),
@@ -46,12 +56,13 @@ ui <- fluidPage(
     
     mainPanel(
       tabsetPanel(
-        tabPanel(
-          "Description",
-          uiOutput("help_text"),
-          plotOutput("distPlot")
-        ),
+        id="inTabset", type = 'hidden',
+        tabPanel("Description",
+                 uiOutput("help_text"),
+                 plotOutput("distPlot")),
         
+        tabPanel("Benefits",
+                 tableOutput("newTable"))
       )
       
     )
@@ -60,17 +71,33 @@ ui <- fluidPage(
   
 )
 
-server <- function(input,output){
+server <- function(input,output, session){
+  #action button for "What?" -> Description Tab
+  observeEvent(input$what.button, {
+    updateTabsetPanel(session, "inTabset",
+                      selected = "Description")
+  })
+  
+  #action button for "Why?" -> Benefits Tab  
+  observeEvent(input$why.button, {
+    updateTabsetPanel(session, "inTabset",
+                      selected = "Benefits")
+  })
+  
   
   output$help_text <- renderUI({
     HTML("<b> Click 'Show plot' to show the plot. </b>")
   })
   
+  #output Description for Watchman
   output$distPlot <- renderPlot({
     plot_data()
   })
   
-  
+  #Output Benefits for Watchman
+  output$newTable <- renderTable({
+    data()
+  })
   
 }
 
