@@ -6,7 +6,13 @@
 #
 #    http://shiny.rstudio.com/
 #
-
+install.packages("shiny")
+install.packages("tidyverse")
+install.packages("plotly")
+install.packages("httr")
+install.packages("jsonlite")
+install.packages("RColorBrewer")
+install.packages("renv")
 library(shiny)
 library(tidyverse)
 library(plotly)
@@ -14,8 +20,10 @@ library(httr)
 library(jsonlite)
 library(RColorBrewer)
 library(renv)
-renv::init(bare=TRUE)
+renv::init()
 renv:snapshot()
+renv:status()
+
 flask_url <- "http://flask:5000/"
 
 ui <- fluidPage(
