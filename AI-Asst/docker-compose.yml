@@ -16,7 +16,7 @@ services:
     ports:
       - "9200:9200"
 
-  volumes:
-    data01:
-      driver: local
+volumes:
+  data01:
+    driver: local
   
