@@ -5,12 +5,15 @@ library(httr)
 library(jsonlite)
 library(RColorBrewer)
 library(bslib)
+
+library(shinyjs)
 library(DT)
 
 
 flask_url <- "http://flask:5000/"
-model <- jsonlite::fromJSON("test_model.json")
+model <- jsonlite::fromJSON("test_model.js")
 
+# If no input from user, use default model
 default_model <- c(
   "Very interesting",
   "I am not sure I understand you fully",
@@ -20,6 +23,8 @@ default_model <- c(
   "Do you feel strongly about discussing such things?"
 )
 
+
+# Function to generate response
 Chatbot <- function(input) {
   # match keywords from model
   pos <- which(lapply(paste0("(.*)?", names(model), "(.*)?"), grep, x = input, ignore.case = TRUE) == 1)
@@ -45,7 +50,6 @@ ui <- fluidPage(
   theme = bs_theme(version = 4, booswatch = "minty"),
   #Application title
   titlePanel("AI Assistant for Medical Sales Representative"),
-  
   #Sidebar for information of product
   sidebarLayout(
     sidebarPanel(
@@ -76,7 +80,7 @@ ui <- fluidPage(
   fluidRow(
   column(3, style = "position: absolute; bottom: 5px; left: 0 ",
          wellPanel(
-    tags$div(id = 'placeholder', style = "max-height: 200px; overflow-y:scroll"),
+    tags$div(id = 'placeholder', style = "max-height: 200px; overflow: auto"),
     div(id = 'txt_label', textInput('txt', 'How can I help you?'),
     actionButton('insertBtn', 'Insert'),
     actionButton('removeBtn', 'Remove'),
@@ -116,6 +120,7 @@ server <- function(input,output,session){
     data()
   })
   
+  # Chatbot
   inserted <- c()
   
   observeEvent(input$insertBtn, {
@@ -132,6 +137,7 @@ server <- function(input,output,session){
         id = id
       )
     )
+    updateTextInput(session, "txt", value = "")
     inserted <<- c(id, inserted)
   })
   
@@ -146,7 +152,6 @@ server <- function(input,output,session){
   observeEvent(input$clearBtn, {
     removeUI(
       ## pass in appropriate div id
-      # selector = paste0('div:has(> #', inserted,')')
       selector = paste0('#', inserted),
       multiple = T
     )
