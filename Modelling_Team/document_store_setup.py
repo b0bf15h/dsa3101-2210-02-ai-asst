@@ -37,6 +37,7 @@ for device in devices:
         split_length=200,
         split_overlap=30,
         split_respect_sentence_boundary=True,
+        add_page_number=True
     )
     docs = preprocessor.process(all_docs)
 
