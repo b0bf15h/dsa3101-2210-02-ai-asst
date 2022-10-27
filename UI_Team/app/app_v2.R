@@ -4,9 +4,9 @@ library(plotly)
 library(httr)
 library(jsonlite)
 library(RColorBrewer)
-library(shinyalert)
+library(bslib)
 library(DT)
-#library(rjson)
+
 
 flask_url <- "http://flask:5000/"
 model <- jsonlite::fromJSON("test_model.json")
@@ -42,7 +42,7 @@ Chatbot <- function(input) {
 }
 
 ui <- fluidPage(
-  
+  theme = bs_theme(version = 4, booswatch = "minty"),
   #Application title
   titlePanel("AI Assistant for Medical Sales Representative"),
   
@@ -61,43 +61,27 @@ ui <- fluidPage(
     
     mainPanel(
       tabsetPanel(
-        tabPanel(
-          "Description",
-          uiOutput("help_text"),
-          plotOutput("distPlot")
-        ),
+        id="inTabset", type = 'hidden',
+        tabPanel("Description",
+                 uiOutput("help_text"),
+                 plotOutput("distPlot")),
         
+        tabPanel("Benefits",
+                 tableOutput("newTable"))
       )
       
     )
-
   ),
-  fluidRow(tabsetPanel(id='tabs', 
-                       tabPanel("Tab1",
-                                div(id = "form", 
-                                    textInput("A", label="Product A *" ),
-                                    selectInput("userId", label="UserId", choices = c("UserA", "UserB", "UserC"),selected = "UserA"), 
-                                    textInput("B", label = "Product B"), 
-                                    selectInput("feature", label="Feature", choices = c("A", "B", "C"))
-                                ),
-                                actionButton("add", "Add")
-                       ), 
-                       tabPanel("Tab2", 
-                                tabPanel("View", 
-                                         conditionalPanel("input.add != 0", 
-                                                          DTOutput("DT2"), hr(), downloadButton('downloadData', 'Download'))
-                                )
-                       )
-  )
-  ),
+  
   fluidRow(
-  column(3, style = "position: absolute; bottom: 0; left: 0; max-height: 300px; overflow-y:scroll",
+  column(3, style = "position: absolute; bottom: 5px; left: 0 ",
          wellPanel(
-    textInput('txt', 'How can I help you?'),
+    tags$div(id = 'placeholder', style = "max-height: 200px; overflow-y:scroll"),
+    div(id = 'txt_label', textInput('txt', 'How can I help you?'),
     actionButton('insertBtn', 'Insert'),
     actionButton('removeBtn', 'Remove'),
-    actionButton('clearBtn', 'Clear'),
-    tags$div(id = 'placeholder')
+    actionButton('clearBtn', 'Clear')),
+    tags$style(type="text/css", "#txt_label {font-weight: bold; font-size: 25px}")
     ),
   offset = 9
   )
@@ -106,12 +90,30 @@ ui <- fluidPage(
   
 server <- function(input,output,session){
   
+  observeEvent(input$what.button, {
+    updateTabsetPanel(session, "inTabset",
+                      selected = "Description")
+  })
+  
+  #action button for "Why?" -> Benefits Tab  
+  observeEvent(input$why.button, {
+    updateTabsetPanel(session, "inTabset",
+                      selected = "Benefits")
+  })
+  
+  
   output$help_text <- renderUI({
     HTML("<b> Click 'Show plot' to show the plot. </b>")
   })
   
+  #output Description for Watchman
   output$distPlot <- renderPlot({
     plot_data()
+  })
+  
+  #Output Benefits for Watchman
+  output$newTable <- renderTable({
+    data()
   })
   
   inserted <- c()
@@ -150,29 +152,6 @@ server <- function(input,output,session){
     )
     inserted <<- c()
   })
-  
-  store <- reactiveValues()
-  
-  
-  observeEvent(input$add,{
-    new_entry <- data.frame(Target_Product=input$A, User=input$userId
-                            , Compared_With= input$B
-                            , Question=input$feature)
-    
-    if("value" %in% names(store)){
-      store$value<-bind_rows(store$value, new_entry)
-    } else {
-      store$value<-new_entry
-    }
-    # If you want to reset the field values after each entry use the following two lines
-    for(textInputId in c("A", "B")) updateTextInput(session, textInputId, value = "")
-    updateSelectInput(session, "userId", selected = "UserA")
-    updateSelectInput(session, "feature", selected = "A")
-  })
-  output$DT2 <- renderDT({
-    store$value
-  })
-
   
 }
   
