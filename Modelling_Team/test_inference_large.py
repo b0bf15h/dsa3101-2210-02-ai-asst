@@ -42,4 +42,4 @@ prediction = pipe.run(
 from haystack.utils import print_answers
 
 # Change `minimum` to `medium` or `all` to control the level of detail
-print_answers(prediction, details="medium")
+print_answers(prediction, details="all")
