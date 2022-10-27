@@ -5,7 +5,6 @@ library(httr)
 library(jsonlite)
 library(RColorBrewer)
 library(bslib)
-
 library(shinyjs)
 library(DT)
 
