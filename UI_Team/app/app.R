@@ -53,6 +53,8 @@ Chatbot <- function(input) {
   output
 }
 
+productlist <- c('Watchman', 'Atriclip', 'Lariat')
+
 ui <- fluidPage(
   theme = bs_theme(version = 4, booswatch = "minty"),
   #Application title
@@ -60,6 +62,7 @@ ui <- fluidPage(
   #Sidebar for information of product
   sidebarLayout(
     sidebarPanel(
+      tags$br(selectInput("ChooseProd",label = "Choose Product", choices = productlist)),
       tags$br(actionButton(inputId="what.button",label="What?",icon=NULL)),
       tags$br(),
       tags$br(actionButton(inputId="why.button",label="Why?",icon=NULL)),
@@ -83,6 +86,13 @@ ui <- fluidPage(
       
     )
   ),
+  
+  fluidRow(
+    column(7, "Input file should have information regarding your medical device:"),
+    column(5, fileInput("file1", "Upload pdf file", accept=".pdf")),
+  ),
+  
+  hr(),
   
   fluidRow(
     column(3, style = "position: absolute; bottom: 5px; left: 0 ",
