@@ -53,6 +53,8 @@ Chatbot <- function(input) {
   output
 }
 
+productlist <- c('Watchman', 'Atriclip', 'Lariat')
+
 ui <- fluidPage(
   theme = bs_theme(version = 4, booswatch = "minty"),
   #Application title
@@ -60,6 +62,7 @@ ui <- fluidPage(
   #Sidebar for information of product
   sidebarLayout(
     sidebarPanel(
+      tags$br(selectInput("ChooseProd",label = "Choose Product", choices = productlist)),
       tags$br(actionButton(inputId="what.button",label="What?",icon=NULL)),
       tags$br(),
       tags$br(actionButton(inputId="why.button",label="Why?",icon=NULL)),
@@ -85,6 +88,13 @@ ui <- fluidPage(
   ),
   
   fluidRow(
+    column(7, "Input file should have information regarding your medical device:"),
+    column(5, fileInput("file1", "Upload pdf file", accept=".pdf")),
+  ),
+  
+  hr(),
+  
+  fluidRow(
     column(3, style = "position: absolute; bottom: 5px; left: 0 ",
            wellPanel(
              tags$div(id = 'placeholder', style = "max-height: 200px; overflow: auto"),
@@ -96,11 +106,7 @@ ui <- fluidPage(
            ),
            offset = 9
     )
-  ),
-  fluidRow(
-    column(7, "Input file should have information regarding your medical device:"),
-    column(5, fileInput("file1", "Upload pdf file", accept=".pdf")),
-)
+  )
 )
 
 server <- function(input,output,session){
@@ -116,13 +122,7 @@ server <- function(input,output,session){
                       selected = "Benefits")
   })
   
-  input_data <- reactive({
-    file <- input$file1
-    ext <- tools::file_ext(file$datapath)
-    req(file)
-    shiny::validate(need(ext == "pdf", "Please upload a pdf file"))
-    POST(flask_url, body=upload_file(file$datapath))
-  })
+  
   output$help_text <- renderUI({
     HTML("<b> Click 'Show plot' to show the plot. </b>")
   })
