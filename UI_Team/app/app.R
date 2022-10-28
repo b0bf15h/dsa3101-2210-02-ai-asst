@@ -91,7 +91,9 @@ ui <- fluidPage(
 server <- function(input,output,session){
   #adds input device names to select input
   observeEvent(input$device_in_file, {
-    updateSelectInput(session,"ChooseProd",choices= c(productlist,str_split(input$device_in_file,',')[[1]]))
+    new_productlist = c(productlist,str_split(input$device_in_file,',')[[1]])
+    updateSelectInput(session,"ChooseProd",choices= new_productlist)
+    productlist = new_productlist
   })
   
   observeEvent(input$what.button, {
