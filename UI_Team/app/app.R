@@ -32,7 +32,7 @@ ui <- fluidPage(
   #Sidebar for information of product
   sidebarLayout(
     sidebarPanel(
-      tags$br(selectInput("ChooseProd",label = "Choose Product", choices = productlist)),
+      tags$br(selectInput("ChooseProd",label = "Learn More About", choices = productlist)),
       tags$br(actionButton(inputId="what.button",label="What?",icon=NULL)),
       tags$br(),
       tags$br(actionButton(inputId="why.button",label="Why?",icon=NULL)),
@@ -58,10 +58,9 @@ ui <- fluidPage(
   ),
   #Take file input to process new documents, users should specify the device that they're looking for
   fluidRow(
-    column(5, "Input file should have information regarding your medical device:",
-           fluidRow(column(5, fileInput("file1", "Upload pdf file", accept=".pdf")),
-                    fluidRow(textInput("device_in_file", "Please specify the devices in this pdf, separated by comma without spaces", placeholder = "Device A,Device B"))
-           ))
+    column(6, "Upload a pdf file containing information about your medical device:",
+           fluidRow(column(5, fileInput("file1",label="", accept=".pdf")))),
+    column(3, textInput("device_in_file", "Find out more about other devices! If there are multiple devices, please separate by comma without spaces.", placeholder = "E.g. Device A,Device B"))
   ),
   
   hr(),
