@@ -56,10 +56,12 @@ ui <- fluidPage(
       
     )
   ),
-  
+  #Take file input to process new documents, users should specify the device that they're looking for
   fluidRow(
-    column(7, "Input file should have information regarding your medical device:"),
-    column(5, fileInput("file1", "Upload pdf file", accept=".pdf")),
+    column(5, "Input file should have information regarding your medical device:",
+           fluidRow(column(5, fileInput("file1", "Upload pdf file", accept=".pdf")),
+                    fluidRow(textInput("device_in_file", "Please specify the devices in this pdf, separated by comma without spaces", placeholder = "Device A,Device B"))
+           ))
   ),
   
   hr(),
@@ -87,6 +89,10 @@ ui <- fluidPage(
 )
 
 server <- function(input,output,session){
+  #adds input device names to select input
+  observeEvent(input$device_in_file, {
+    updateSelectInput(session,"ChooseProd",choices= c(productlist,str_split(input$device_in_file,',')[[1]]))
+  })
   
   observeEvent(input$what.button, {
     updateTabsetPanel(session, "inTabset",
