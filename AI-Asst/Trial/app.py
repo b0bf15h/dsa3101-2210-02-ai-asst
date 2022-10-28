@@ -3,5 +3,6 @@ app = Flask(__name__)
 
 @app.route("/prediction", methods=["GET"])
 def make_prediction():
-    return 'hi'
+    question = request.args.get('question')
+    return question
 
