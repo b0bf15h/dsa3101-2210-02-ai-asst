@@ -24,8 +24,7 @@ build_chatbot <- function(device, ques, find=1){
 }
 
 check_device <- function(device, productlist){
-  product <-  c(productlist) # can update after users upload files?
-  pos <- which(lapply(paste0("(.*)?", names(product), "(.*)?"), grep, x = device, ignore.case = TRUE) == 1)
+  pos <- which(lapply(paste0("(.*)?", productlist, "(.*)?"), grep, x = device, ignore.case = TRUE) == 1)
   if (length(pos) == 0){
     pos <- 0
   }
