@@ -79,7 +79,7 @@ eval_labels = document_store.get_all_labels_aggregated(drop_negative_labels=True
 from haystack.schema import EvaluationResult, MultiLabel
 
 advanced_eval_result = pipeline.eval(
-    labels=eval_labels, params={"Retriever": {"top_k": 5}}, sas_model_name_or_path="cross-encoder/stsb-roberta-large"
+    labels=eval_labels, params={"Retriever": {"top_k": 5}}, sas_model_name_or_path="cross-encoder/stsb-roberta-large", sas_use_gpu=True
 )
 
 metrics = advanced_eval_result.calculate_metrics()
