@@ -22,7 +22,7 @@ retriever = BM25Retriever(document_store=document_store)
 from haystack.nodes import FARMReader
 # Load a  local model or any of the QA models on
 # Hugging Face's model hub (https://huggingface.co/models)
-reader = FARMReader(model_name_or_path="deepset/bert-large-uncased-whole-word-masking-squad2", use_gpu=True)
+reader = FARMReader(model_name_or_path="deepset/bert-large-uncased-whole-word-masking-squad2", use_gpu=True, return_no_answer=True)
 
 
 
@@ -33,8 +33,8 @@ pipe = ExtractiveQAPipeline(reader, retriever)
 
 
 prediction = pipe.run(
-    query="What are the risks of having a Watchman implant procedure?",
-    params={"Retriever": {"top_k": 15}, "Reader": {"top_k": 5}, "filters":{"device":["Watchman"]}}
+    query="Trying to get no answer",
+    params={"Retriever": {"top_k": 10}, "Reader": {"top_k": 5}, "filters":{"device":["Watchman"]}}
 )
 
 

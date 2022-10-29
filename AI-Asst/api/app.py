@@ -21,7 +21,7 @@ retriever = BM25Retriever(document_store=document_store)
 from haystack.nodes import FARMReader
 # Load a  local model or any of the QA models on
 # Hugging Face's model hub (https://huggingface.co/models)
-reader = FARMReader(model_name_or_path="deepset/bert-large-uncased-whole-word-masking-squad2", use_gpu=True)
+reader = FARMReader(model_name_or_path="deepset/bert-large-uncased-whole-word-masking-squad2", use_gpu=True, return_no_answer=True)
 
 
 
