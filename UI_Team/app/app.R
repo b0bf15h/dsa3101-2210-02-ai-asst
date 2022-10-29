@@ -157,12 +157,12 @@ server <- function(input,output,session){
         if(text!=""){
         # check whether previous device inserted
         if (length(device) == 0) {found <- check_device(text, productlist)}
-        else {found <- -1} # Have revious device
+        else {found <- -1} # Have previous device
         
         if(found==0){
           # Not valid device
-          tags$div(tags$p(renderText({paste("Jarvik: ", "Sorry I do not have this device infomation!")})),
-                    tags$p(renderText({paste("Jarvik: Please search for another device by typing below!")})),
+          tags$div(tags$p(renderText({paste("Jarvik: ", "Sorry I do not have infomation for this device!")})),
+                    tags$p(renderText({paste("Jarvik: Please enter another device!")})),
                             tags$hr())
           }else if(found != -1){
             # A valid device found 
@@ -202,7 +202,7 @@ server <- function(input,output,session){
         else {tags$div(tags$p(renderText({paste("Jarvik:[", device[length(device)], "]", 
                                        "Sorry, I cannot come up with other answers.")})),
                     tags$p(renderText({paste("Jarvik:[", device[length(device)], "]", 
-                                                       "Please ask for another question!")})) 
+                                                       "Please ask a different question!")})) 
                       )},
         id = id
       )
@@ -247,7 +247,7 @@ server <- function(input,output,session){
       ui = tags$div(
         if (length(ques) == 0){
           device <<- c()
-          tags$b(renderText({paste("Jarvik: ","Please type the device you want to search for")}))
+          tags$b(renderText({paste("Jarvik: ","Please enter the device you want to search for")}))
           tags$br()
         }else{
           ques <<- ques[-1]
