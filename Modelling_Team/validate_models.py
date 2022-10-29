@@ -75,22 +75,6 @@ pipeline = ExtractiveQAPipeline(reader=reader, retriever=retriever)
 # We are also opting to filter out no_answer samples
 eval_labels = document_store.get_all_labels_aggregated(drop_negative_labels=True, drop_no_answers=True)
 
-# Similar to pipeline.run() we can execute pipeline.eval()
-eval_result = pipeline.eval(labels=eval_labels, params={"Retriever": {"top_k": 5}})
-
-
-
-metrics = eval_result.calculate_metrics()
-print(f'Retriever - Recall (single relevant document): {metrics["Retriever"]["recall_single_hit"]}')
-print(f'Retriever - Recall (multiple relevant documents): {metrics["Retriever"]["recall_multi_hit"]}')
-print(f'Retriever - Mean Reciprocal Rank: {metrics["Retriever"]["mrr"]}')
-print(f'Retriever - Precision: {metrics["Retriever"]["precision"]}')
-print(f'Retriever - Mean Average Precision: {metrics["Retriever"]["map"]}')
-
-print(f'Reader - F1-Score: {metrics["Reader"]["f1"]}')
-print(f'Reader - Exact Match: {metrics["Reader"]["exact_match"]}')
-
-
 
 
 advanced_eval_result = pipeline.eval(
