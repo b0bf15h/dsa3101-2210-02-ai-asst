@@ -1,0 +1,22 @@
+services:
+
+  flask:
+    build: ./api
+    ports:
+      - "5000:5000"
+    environment:
+    - ELASTICSEARCH_HOST=elasticsearch
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.5.1
+    environment:
+      - discovery.type=single-node
+    volumes:
+      - data01:/usr/share/elasticsearch/data
+    ports:
+      - "9200:9200"
+
+volumes:
+  data01:
+    driver: local
+  
