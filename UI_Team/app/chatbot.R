@@ -8,7 +8,7 @@ chatbot <- function(file="answers1.js", find=1) {
   
   answers <- docs['answers'][[1]]
   if (length(answers) < find){
-    output <- "Sorry, no more infomation available.  Please search for another device!"
+    output <- "-1" #"Sorry, no more infomation available.  Please search for another device!"
   }else{
     output <- answers %>% as_tibble() %>% 
       arrange(desc(score)) %>% slice(find) %>% 

@@ -52,8 +52,7 @@ ui <- fluidPage(
         
         tabPanel("Benefits",
                  tableOutput("newTable"))
-      )
-      
+      ),
     )
   ),
   #Take file input to process new documents, users should specify the device that they're looking for
@@ -67,20 +66,18 @@ ui <- fluidPage(
   
   fluidRow(
   column(3, style = "position: absolute; bottom: 5px; left: 0 ",
-         div(actionButton("chatbotBtn", "Chatbot", style="font-size:30px"), 
+         div(actionButton("JarvikBtn", "Jarvik", style="font-size:30px",icon('question-sign',lib = "glyphicon")), 
              style="right:10px; bottom: 5px; position: absolute"),
     
     hidden(wellPanel(id = 'chat', style="bottom:70px",
     tags$div(id = 'placeholder', style = "max-height: 200px; overflow: auto"),
-    hidden(tags$div(id = "else", actionButton("elseBtn","Show me the something else", style ="color: red; font-size: 13px" ),
-                    actionButton("switchBtn","Switch to another device",  style ="color: red;font-size: 13px"))),
-    div(id = 'txt_label', textInput('txt', 'How can I help you?', placeholder = "Enter your questions"),
+    hidden(tags$div(id = "else", hidden(actionButton("elseBtn","Show me something else", class="btn btn-sm")),
+                    actionButton("switchBtn","Search for another device",  class="btn btn-sm"))),
+    div(id = 'txt_label', textInput('txt', h4("How can I help you?") , placeholder = "Enter your questions"),
     actionButton('insertBtn', 'Insert'),
     actionButton('removeBtn', 'Remove'),
     actionButton('clearBtn', 'Clear')),
-    tags$br(),
-    
-    tags$style(type="text/css", "#txt_label {font-weight: bold; font-size: 25px}")
+    tags$br()
     )),
   offset = 9
   )
@@ -88,6 +85,7 @@ ui <- fluidPage(
 )
 
 server <- function(input,output,session){
+  bs_themer()
   #adds input device names to select input
   observeEvent(input$device_in_file, {
     new_productlist = c(productlist,str_split(input$device_in_file,',')[[1]])
@@ -121,22 +119,31 @@ server <- function(input,output,session){
     data()
   })
   
-  # Chatbot
-  observeEvent(input$chatbotBtn, {
-    toggle("chat")
-    insertUI(
-      selector = '#placeholder',
-      ui = tags$div(
-        tags$p(renderText({paste("Chatbot: ","Hello, I am your AI Assistant!")})),
-        tags$p(renderText({paste("Chatbot: ","What device are you looking for?")}))
-      )
-    )
-  })
-  
+  # Jarvik Chatbot
   inserted <- c()
   device <- c()
   ques <- c()
   btn <- c()
+  
+  observeEvent(input$JarvikBtn, {
+    toggle("chat")
+    if(input$JarvikBtn%%2){
+      if (length(btn)==0){btn <<- input$JarvikBtn}
+      else btn <<- btn+1
+      id <- paste0('txt', btn)
+      insertUI(
+        selector = '#placeholder',
+        ui = tags$div(
+            tags$hr(),
+            tags$p(renderText({paste("Jarvik: ","Hello, I am Jarvik! Your AI Assistant!")})),
+            tags$p(renderText({paste("Jarvik: ","What device are you looking for?")})),
+            id = id
+            )
+      )
+      inserted <<- c(id, inserted)
+      }
+  })
+  
   
   observeEvent(input$insertBtn, {
     if (length(btn)==0){btn <<- input$insertBtn}
@@ -154,27 +161,28 @@ server <- function(input,output,session){
         
         if(found==0){
           # Not valid device
-          tags$div(tags$p(renderText({paste("Chatbot: ", "Sorry we do not have this device infomation!")})),
-                    tags$p(renderText({paste("Chatbot: Please search for another device!")})),
+          tags$div(tags$p(renderText({paste("Jarvik: ", "Sorry I do not have this device infomation!")})),
+                    tags$p(renderText({paste("Jarvik: Please search for another device by typing below!")})),
                             tags$hr())
           }else if(found != -1){
             # A valid device found 
             device <<- c(text, device)
-            tags$p(renderText({paste("Chatbot: ", "Great! What is your question?")}))
+            tags$p(renderText({paste("Jarvik: ", "Great! What is your question?")}))
         }else{
           # Text is the question (after searching for a valid device)
           ques <<- c(text, ques)
           answer <- build_chatbot(device, ques, find=1)
-          tags$p(renderText({paste("Chatbot:[", device[length(device)], "]", answer)}))
+          tags$p(renderText({paste("Jarvik:[", device[length(device)], "]", answer)}))
         }
         }else{
-          tags$p(renderText({paste("Chatbot: ", "I am not sure I understand you fully")}))
+          tags$p(renderText({paste("Jarvik: ", "I am not sure I understand you fully")}))
         },
         id = id
       )
     )
     if(text!="" && found == -1){
       show("else")
+      show("elseBtn")
     }else{hide("else")}
     
     updateTextInput(session, "txt",  value= "")
@@ -190,16 +198,20 @@ server <- function(input,output,session){
       ## wrap element in a div with id for ease of removal
       ui = tags$div(
         tags$b(paste('You: ','Show me something else about "', ques[1], '"')),
-        tags$p(renderText({paste("Chatbot:[", device[length(device)], "]", answer)})),
+        if (answer != -1){tags$p(renderText({paste("Jarvik:[", device[length(device)], "]", answer)}))}
+        else {tags$div(tags$p(renderText({paste("Jarvik:[", device[length(device)], "]", 
+                                       "Sorry, I cannot come up with other answers.")})),
+                    tags$p(renderText({paste("Jarvik:[", device[length(device)], "]", 
+                                                       "Please ask for another question!")})) 
+                      )},
         id = id
       )
     )
-    
-    if (answer == "Sorry, no more infomation available.  Please search for another device!"){
-      hide("else")
-    }
-    
-    ques <<- c(ques[1], ques)
+    if (answer == -1){
+      hide("elseBtn")
+      #updateActionButton(session, "elseBtn", label = "Another Question")
+      ques <<- c()
+    }else{ques <<- c(ques[1], ques)}
     inserted <<- c(id, inserted)
   })
   
@@ -210,7 +222,7 @@ server <- function(input,output,session){
       selector = '#placeholder',
       ui = tags$div(
         tags$hr(),
-        tags$b(renderText({paste("Chatbot: ","What device are you looking for?")})),
+        tags$b(renderText({paste("Jarvik: ","What device are you looking for?")})),
         tags$br(),
         device <<- c(),
         ques <<- c(),
@@ -235,11 +247,11 @@ server <- function(input,output,session){
       ui = tags$div(
         if (length(ques) == 0){
           device <<- c()
-          tags$b(renderText({paste("Chatbot: ","Please type the device you want to search for")}))
+          tags$b(renderText({paste("Jarvik: ","Please type the device you want to search for")}))
           tags$br()
         }else{
           ques <<- ques[-1]
-          tags$b(renderText({paste('Chatbot: ', 'You can also ask questions about "', 
+          tags$b(renderText({paste('Jarvik: ', 'You can also ask questions about "', 
                                    device[length(device)], '"')}))
           tags$br()
         }
