@@ -76,6 +76,7 @@ pipeline = ExtractiveQAPipeline(reader=reader, retriever=retriever)
 eval_labels = document_store.get_all_labels_aggregated(drop_negative_labels=True, drop_no_answers=True)
 
 
+from haystack.schema import EvaluationResult, MultiLabel
 
 advanced_eval_result = pipeline.eval(
     labels=eval_labels, params={"Retriever": {"top_k": 5}}, sas_model_name_or_path="cross-encoder/stsb-roberta-large"
