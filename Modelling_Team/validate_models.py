@@ -38,8 +38,8 @@ preprocessor = PreProcessor(
     clean_empty_lines=False,
     clean_whitespace=False,
 )
-document_store.delete_documents(index=doc_index)
-document_store.delete_documents(index=label_index)
+document_store.delete_all_documents(index=doc_index)
+document_store.delete_all_documents(index=label_index)
 
 # The add_eval_data() method converts the given dataset in json format into Haystack document and label objects. Those objects are then indexed in their respective document and label index in the document store. The method can be used with any dataset in SQuAD format.
 document_store.add_eval_data(
