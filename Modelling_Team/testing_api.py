@@ -1,8 +1,8 @@
 import requests
 
-def test_api(URL, question, device):
+def test_api(question, device):
 
-    #URL = "http://localhost:5000/prediction"
+    URL = "http://localhost:5000/prediction"
 
     #question = "What is the dimension of the Watchman device"
     #device = "Watchman"
@@ -20,4 +20,4 @@ def test_api(URL, question, device):
     return data
 
 
-# test_api("http://localhost:5000/prediction", "What is the dimension of the Watchman device", "Watchman")
+# test_api("What is the dimension of the Watchman device", "Watchman")
