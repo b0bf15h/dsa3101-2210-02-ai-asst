@@ -7,7 +7,7 @@
 <link href="Presentation_files/libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="Presentation_files/libs/quarto-html/quarto-html.min.css" rel="stylesheet" data-mode="light">
 <link href="Presentation_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.0.36">
+  <meta name="generator" content="quarto-1.2.253">
 
   <meta name="author" content="Low Junwei - Hari Shiman R - Tyro Soh - B. Nishanth">
   <title>Question Answering Model</title>
@@ -19,10 +19,15 @@
   <style>
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
-    span.underline{text-decoration: underline;}
-    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
     ul.task-list{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
     pre > code.sourceCode { white-space: pre; position: relative; }
     pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
     pre > code.sourceCode > span:empty { height: 1.2em; }
@@ -383,11 +388,18 @@
   <div class="reveal">
     <div class="slides">
 
-<section id="title-slide" class="center">
+<section id="title-slide" class="quarto-title-block center">
   <h1 class="title">Question Answering Model</h1>
-  <p class="author">Low Junwei - Hari Shiman R - Tyro Soh - B. Nishanth</p>
-</section>
 
+<div class="quarto-title-authors">
+<div class="quarto-title-author">
+<div class="quarto-title-author-name">
+Low Junwei - Hari Shiman R - Tyro Soh - B. Nishanth 
+</div>
+</div>
+</div>
+
+</section>
 <section id="outline" class="slide level2">
 <h2>Outline</h2>
 <ul>
@@ -432,10 +444,500 @@
 </div>
 </div>
 </section>
-<section class="slide level2">
-
+<section id="api-demo" class="slide level2">
+<h2>API Demo</h2>
 <div class="cell" data-execution_count="1">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1"></a><span class="co">#import test_inference</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1"></a><span class="im">import</span> requests</span>
+<span id="cb1-2"><a href="#cb1-2"></a></span>
+<span id="cb1-3"><a href="#cb1-3"></a><span class="kw">def</span> test_api(question, device):</span>
+<span id="cb1-4"><a href="#cb1-4"></a></span>
+<span id="cb1-5"><a href="#cb1-5"></a>    URL <span class="op">=</span> <span class="st">"http://localhost:5000/prediction"</span></span>
+<span id="cb1-6"><a href="#cb1-6"></a></span>
+<span id="cb1-7"><a href="#cb1-7"></a>    <span class="co">#question = "What is the dimension of the Watchman device"</span></span>
+<span id="cb1-8"><a href="#cb1-8"></a>    <span class="co">#device = "Watchman"</span></span>
+<span id="cb1-9"><a href="#cb1-9"></a>    </span>
+<span id="cb1-10"><a href="#cb1-10"></a>    <span class="co"># defining a params dict for the parameters to be sent to the API</span></span>
+<span id="cb1-11"><a href="#cb1-11"></a>    PARAMS <span class="op">=</span> {<span class="st">'question'</span>:question, <span class="st">"device"</span>:device}</span>
+<span id="cb1-12"><a href="#cb1-12"></a>    </span>
+<span id="cb1-13"><a href="#cb1-13"></a>    <span class="co"># sending get request and saving the response as response object</span></span>
+<span id="cb1-14"><a href="#cb1-14"></a>    r <span class="op">=</span> requests.get(url <span class="op">=</span> URL, params <span class="op">=</span> PARAMS)</span>
+<span id="cb1-15"><a href="#cb1-15"></a>    </span>
+<span id="cb1-16"><a href="#cb1-16"></a>    <span class="co"># extracting data in json format</span></span>
+<span id="cb1-17"><a href="#cb1-17"></a>    data <span class="op">=</span> r.json()</span>
+<span id="cb1-18"><a href="#cb1-18"></a>    </span>
+<span id="cb1-19"><a href="#cb1-19"></a>    </span>
+<span id="cb1-20"><a href="#cb1-20"></a>    <span class="cf">return</span> data</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="api-demo-query-1" class="slide level2">
+<h2>API Demo Query 1</h2>
+<div class="cell" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1"></a>test_api(<span class="st">"What is the dimension of the Watchman device"</span>, <span class="st">"Watchman"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="5">
+<pre><code>{'answers': [{'answer': '~ 1 INCH',
+   'context': 'nnection%20 for%20hcp.pdf. Published 2012. Accessed September 1, 2016. ~ 1 INCH Is the WATCHMAN Implant safe? Over 200,000 people have already receive',
+   'document_id': 'd28b82e03b58b15283b2fc4b2bdabb6',
+   'meta': {'_split_id': 6,
+    'device': 'Watchman',
+    'name': 'WATCHMAN_DTP_Brochure.pdf',
+    'page': 4},
+   'offsets_in_context': [{'end': 79, 'start': 71}],
+   'offsets_in_document': [{'end': 1076, 'start': 1068}],
+   'score': 0.7591883540153503,
+   'type': 'extractive'},
+  {'answer': '',
+   'context': None,
+   'document_id': None,
+   'meta': {},
+   'offsets_in_context': [{'end': 0, 'start': 0}],
+   'offsets_in_document': [{'end': 0, 'start': 0}],
+   'score': 0.7094161208776104,
+   'type': 'extractive'},
+  {'answer': 'left atrial appendage in the heart',
+   'context': ' FLX Devices are permanent implants designed to close the left atrial appendage in the heart in an effort to reduce the risk of stroke. With all medic',
+   'document_id': 'e9f0ff14146b628656fe6d33cecd71f8',
+   'meta': {'_split_id': 14,
+    'device': 'Watchman',
+    'name': 'WATCHMAN_DTP_Brochure.pdf',
+    'page': 6},
+   'offsets_in_context': [{'end': 92, 'start': 58}],
+   'offsets_in_document': [{'end': 621, 'start': 587}],
+   'score': 0.3765805661678314,
+   'type': 'extractive'},
+  {'answer': 'about the size of a quarter',
+   'context': 'AN Implant? The WATCHMAN Implant is a small, flexible implant about the size of a quarter. It is made from very light, compact materials commonly used',
+   'document_id': '1135d98488e475ff1d491fe71445b1c8',
+   'meta': {'_split_id': 7,
+    'device': 'Watchman',
+    'name': 'WATCHMAN_DTP_Brochure.pdf',
+    'page': 4},
+   'offsets_in_context': [{'end': 89, 'start': 62}],
+   'offsets_in_document': [{'end': 328, 'start': 301}],
+   'score': 0.36826199293136597,
+   'type': 'extractive'},
+  {'answer': 'The WATCHMAN Implant is covered for eligible Medicare patients and does not require advance approval',
+   'context': 't. BEFORE GETTING READY. Get insurance approval. The WATCHMAN Implant is covered for eligible Medicare patients and does not require advance approval.',
+   'document_id': '1135d98488e475ff1d491fe71445b1c8',
+   'meta': {'_split_id': 7,
+    'device': 'Watchman',
+    'name': 'WATCHMAN_DTP_Brochure.pdf',
+    'page': 4},
+   'offsets_in_context': [{'end': 149, 'start': 49}],
+   'offsets_in_document': [{'end': 1176, 'start': 1076}],
+   'score': 0.31928324699401855,
+   'type': 'extractive'}],
+ 'documents': [{'content': 'With almost 20 years of clinical and real-world experience — including 10 clinical trials — WATCHMAN has a proven safety record. 200,000+ 20 YEARS WHAT THE WATCHMAN IMPLANT IS AND HOW IT WORKS LEFT ATRIAL APPENDAGE (LAA) What is the WATCHMAN Implant? The WATCHMAN Implant is a small, flexible implant about the size of a quarter. It is made from very light, compact materials commonly used in many other medical implants. It is placed into your heart during a minimally invasive procedure and never needs to be replaced. TAKING A CLOSER LOOK AT THE WATCHMAN™ IMPLANT. With WATCHMAN, I can forget about the concern of a stroke. I can forget about the concern of side effects from drugs and just try to live a happy, healthy life. —AJ, 68 6 7\x0cThe decision to get the WATCHMAN Implant is shared between you and your doctor. You’ll talk about what’s important to you, your goals, and the procedure’s risks and benefits. Together, you’ll decide whether the WATCHMAN Implant is the right choice for you. If so, here is what comes next. BEFORE GETTING READY. Get insurance approval. The WATCHMAN Implant is covered for eligible Medicare patients and does not require advance approval.',
+   'content_type': 'text',
+   'embedding': None,
+   'id': '1135d98488e475ff1d491fe71445b1c8',
+   'meta': {'_split_id': 7,
+    'device': 'Watchman',
+    'name': 'WATCHMAN_DTP_Brochure.pdf',
+    'page': 4},
+   'score': 0.7383848722354894},
+  {'content': 'Answer a few questions and get a customized guide Questions to Ask Your Doctor What are the risks and benefits of the different blood thinners? • Does my lifestyle or health history put me at risk for serious bleeding? • Am I a candidate for left atrial appendage closure? • What should I know about the WATCHMAN Implant? • What are the differences in cost between blood thinners and the WATCHMAN Implant? • See if the WATCHMAN Implant is right for you \uf054 ×\x0cWATCHMAN is the only FDA-approved implant proven to safely and effectively lower stroke risk in people with AFib not caused by heart valve problems. NEXT: Why Choose WATCHMAN 2 WATCHMAN is for people with atrial fibrillation not caused by a heart valve problem who need an alternative to blood thinners. This website is intended to provide patients and caregivers with some information about the WATCHMAN Implant. It may help prepare you for talking to your doctor about your options for reducing stroke risk. Important Safety Information The WATCHMAN and WATCHMAN FLX Devices are permanent implants designed to close the left atrial appendage in the heart in an effort to reduce the risk of stroke.',
+   'content_type': 'text',
+   'embedding': None,
+   'id': '331c892df748bd709f621cb521af8250',
+   'meta': {'_split_id': 9,
+    'device': 'Watchman',
+    'name': 'Alternative to Warfarin – WATCHMAN Implant.pdf',
+    'page': 4},
+   'score': 0.7369428429952753},
+  {'content': 'The one-time, minimally invasive procedure for people with non-valvular AFib who need an alternative to blood thinners. ONE TIME. FOR A LIFETIME. WELCOME TO WATCHMAN™\x0cMORE THAN 200,000 PEOPLE HAVE LEFT BLOOD THINNERS BEHIND WITH THE WATCHMAN™ IMPLANT. Non-valvular AFib can mean a lifetime of blood thinners. It can also mean a lifetime of worry about bleeds from falls, other medical issues, or an unexpected surgery. The WATCHMAN Implant procedure is a trusted alternative that permanently reduces both stroke risk and bleeding worry. With almost 20 years of clinical and real-world experience—including 10 clinical trials—it is proven to be safe and effective. Here’s what you’ll find inside this brochure. STROKE RISK REDUCTION OPTIONS WHAT THE WATCHMAN IMPLANT IS AND HOW IT WORKS BEFORE, DURING AND AFTER YOUR PROCEDURE LIVING LIFE WITH THE WATCHMAN IMPLANT HOW TO GET IN TOUCH WITH US Read on to learn more about the WATCHMAN Implant. When I was on blood thinners, it was always a different life. WATCHMAN was a lifesaver. It put me back to being who I was.',
+   'content_type': 'text',
+   'embedding': None,
+   'id': '9e35ababdb14c8de0420cc0e7d6e3ca',
+   'meta': {'_split_id': 0,
+    'device': 'Watchman',
+    'name': 'WATCHMAN_DTP_Brochure.pdf',
+    'page': 1},
+   'score': 0.7220008329300501},
+  {'content': 'It’s designed to permanently close it off and keep those blood clots from escaping. Advanced, Heart-Friendly Design Science always looks for ways to make effective treatments even better. The WATCHMAN Implant is no exception. The WATCHMAN FLX Implant design is an advancement that enables the implant to fit a greater number of patients, giving more people than ever a safe, effective alternative to blood thinners should they need one. Learn more about the WATCHMAN Implant and how it works at watchman.com/video 1. Blackshear JL, Odell JA. Appendage obliteration to reduce stroke in cardiac surgical patients with atrial fibrillation. Ann Thorac Surg. 1996;61:755-759. 2. National Stroke Association. Making the Afib-Stroke Connection. https://www.stroke.org/sites/ default/files/resources/Afib-Connection%20for%20hcp.pdf. Published 2012. Accessed September 1, 2016. 3. National Stroke Association. Making the Afib-Stroke Connection. https://www.stroke.org/sites/default/files/resources/Afib- Connection%20 for%20hcp.pdf. Published 2012. Accessed September 1, 2016. ~ 1 INCH Is the WATCHMAN Implant safe? Over 200,000 people have already received the WATCHMAN Implant. With almost 20 years of clinical and real-world experience — including 10 clinical trials — WATCHMAN has a proven safety record. 200,000+ 20 YEARS WHAT THE WATCHMAN IMPLANT IS AND HOW IT WORKS LEFT ATRIAL APPENDAGE (LAA) What is the WATCHMAN Implant?',
+   'content_type': 'text',
+   'embedding': None,
+   'id': 'd28b82e03b58b15283b2fc4b2bdabb6',
+   'meta': {'_split_id': 6,
+    'device': 'Watchman',
+    'name': 'WATCHMAN_DTP_Brochure.pdf',
+    'page': 4},
+   'score': 0.7192880653941411},
+  {'content': 'The WATCHMAN Implant Reduces the Risk of Stroke from Non‑valvular AFib See if the WATCHMAN Implant is right for you \uf054 × MENU\x0cSee How The WATCHMAN Implant Works Over 1/3 of people with AFib feel trapped between the fear of having a stroke and fear of the risks associated with blood thinners. In fact, more than 4 in 5 people with AFib taking a blood thinner (83%) say they would be willing to try a different treatment to help reduce their risk of stroke. See What Makes the WATCHMAN Implant Different Beyond Blood Thinners 1 The WATCHMAN Implant effectively reduces the risk of stroke—without the risk of bleeding that can come with the long-term use of blood thinners. See Why People Choose the WATCHMAN Implant For All the Right Reasons 2,3 We have a lot of freedom now to do the things that we love to do together, without all those fears. — LINDA, 76 03:42 See if the WATCHMAN Implant is right for you \uf054 ×\x0cSee this story about what life could be like without blood thinners after having the WATCHMAN Implant procedure. ©2022 Boston Scientific Corporation and its affiliates.',
+   'content_type': 'text',
+   'embedding': None,
+   'id': '8bf8d6f108a4ec2f38b99d522be93570',
+   'meta': {'_split_id': 1,
+    'device': 'Watchman',
+    'name': 'WATCHMAN Implant for Non-Valvular Afib Stroke Risk.pdf',
+    'page': 1},
+   'score': 0.7166467116398799},
+  {'content': 'STROKE RISK REDUCTION OPTIONS WHAT THE WATCHMAN IMPLANT IS AND HOW IT WORKS BEFORE, DURING AND AFTER YOUR PROCEDURE LIVING LIFE WITH THE WATCHMAN IMPLANT HOW TO GET IN TOUCH WITH US Read on to learn more about the WATCHMAN Implant. When I was on blood thinners, it was always a different life. WATCHMAN was a lifesaver. It put me back to being who I was. —CLIFF, 68 3\x0cWhile some people may be able stop blood thinners immediately after the procedure, in a clinical trial 96% of people were able to discontinue their blood thinner 45 days after the WATCHMAN Implant.1 THE GOAL: REDUCING YOUR STROKE RISK. BLOOD THINNERS ARE ONE WAY. It’s a one time, minimally-invasive procedure that permanently reduces stroke risk without the worries that come with a lifetime of blood thinners. For some people, that means an extra measure of safety if they have bleeding due to certain medical conditions, such as an ulcer. For others, it means peace of mind should they need surgery. A more active lifestyle is also less risky, including travel that’s not near medical help. What about cost?',
+   'content_type': 'text',
+   'embedding': None,
+   'id': 'e5d9a97c0d552ce5cb2a96f2bdb2b3b5',
+   'meta': {'_split_id': 1,
+    'device': 'Watchman',
+    'name': 'WATCHMAN_DTP_Brochure.pdf',
+    'page': 2},
+   'score': 0.7126244926784274},
+  {'content': 'Together, you’ll decide whether the WATCHMAN Implant is the right choice for you. If so, here is what comes next. BEFORE GETTING READY. Get insurance approval. The WATCHMAN Implant is covered for eligible Medicare patients and does not require advance approval. If you have commercial insurance, you may need prior authorization from your plan. Your doctor’s office may be able to assist. Choose a medical center. You and your doctor will decide on a center. You can view options at watchman.com/centers, and your doctor will provide a referral. Typically, the medical center will call you to schedule a consultation, or your doctor’s office may schedule it for you. Have an exam and heart scan. In addition to a physical, you may have a special test called a TEE (transesophogeal echocardiogram) which takes pictures of your heart so the doctor can see your LAA and to make sure you don’t have an existing blood clot. Set the date for your WATCHMAN Implant procedure. Your doctor and implant team will tell you how to prepare. Make sure you understand all the instructions, including what medications you should and should not take, and ask any questions you have.',
+   'content_type': 'text',
+   'embedding': None,
+   'id': '1b18981a0a682c9950bbf1fe724a20a6',
+   'meta': {'_split_id': 8,
+    'device': 'Watchman',
+    'name': 'WATCHMAN_DTP_Brochure.pdf',
+    'page': 5},
+   'score': 0.710105451241491},
+  {'content': 'This very important card lets medical personnel know that you have the WATCHMAN Implant. Remember to carry it with you at all times and register it in case it gets lost. Go to watchman.com/register. What is a WATCHMAN Implant Card and why do I need it? I didn’t have any problems getting the [WATCHMAN] procedure and I feel so much better since I had it. It makes me feel good that I can get up and go and not worry. —CAMILLE, 89 LIVING LIFE WITH THE WATCHMAN IMPLANT 10 11\x0cImportant Safety Information The WATCHMAN™ and WATCHMAN FLX Devices are permanent implants designed to close the left atrial appendage in the heart in an effort to reduce the risk of stroke. With all medical procedures there are risks associated with the implant procedure and the use of the device.',
+   'content_type': 'text',
+   'embedding': None,
+   'id': 'e9f0ff14146b628656fe6d33cecd71f8',
+   'meta': {'_split_id': 14,
+    'device': 'Watchman',
+    'name': 'WATCHMAN_DTP_Brochure.pdf',
+    'page': 6},
+   'score': 0.7081614001881196},
+  {'content': 'All data collection and adverse event reporting were performed directly by the individual sites and captured in a standardized central database. Adverse event adjudication was based on ISO 14155 and the MEDDEV 2.7/3 12/2010 and included serious events such as perforation, tamponade, embolism, neurological events, thrombosis, and bleeding. Bleeding was scored according to the BARC (Bleeding Academic Research Consortium) criteria,7 aligning with definition of major bleeding (which includes fatal and life threatening) described by Tzikas et al8 in the consensus document on definitions, end points, and data collection requirements. Stroke was classified in accordance to the criteria described by Leon et al.9 All data and events were adjudicated and entered into the central database by the local investigators. Events and relevant source documents WHAT IS KNOWN? • The left atrial appendage is the most important source of thromboembolism and stroke in patients with nonvalvular atrial fibrillation. • Mechanical closure with WATCHMAN has been proven an effective alternative to vitamin K antagonists for stroke-protection in randomized controlled trials. WHAT THE STUDY ADDS?',
+   'content_type': 'text',
+   'embedding': None,
+   'id': '4cd23a4330a2ae9bacbcd42eec258a8c',
+   'meta': {'_split_id': 10,
+    'device': 'Watchman',
+    'name': 'CIRCEP.118.006841.pdf',
+    'page': 2},
+   'score': 0.6964046302592046},
+  {'content': "Learn more about who WATCHMAN is for Blood Thinner Medications and AFib Stroke Risk 1 2 Like blood thinners, WATCHMAN can effectively reduce stroke risk. This permanent implant is for people with AFib not caused by a heart valve problem who need an alternative. WATCHMAN or Blood Thinners? 2 Over a 1/3 of people with AFib feel trapped between the fear of having a stroke and fear of the risks associated with blood thinners. In fact, more than 4 in 5 people with AFib taking a blood thinner (83%) say they would be willing to try a different treatment to help reduce their risk of stroke. Beyond Blood Thinners 3 See if the WATCHMAN Implant is right for you \uf054 × MENU\x0cSee if it's right for you See What Makes WATCHMAN Different Warfarin is a common blood thinner prescribed to reduce stroke risk in people with atrial fibrillation. It’s been used for decades and is typically less expensive than the newer types of blood thinners—but it comes with certain requirements and restrictions. Regular blood tests: With warfarin, you have to get regular blood tests—from twice a week to once a month, depending on your doctor’s recommendation.",
+   'content_type': 'text',
+   'embedding': None,
+   'id': 'dafcad6dcf0853b574e9e24b37dad7a9',
+   'meta': {'_split_id': 1,
+    'device': 'Watchman',
+    'name': 'Alternative to Warfarin – WATCHMAN Implant.pdf',
+    'page': 1},
+   'score': 0.6887028974825785}],
+ 'no_ans_gap': 6.020696640014648,
+ 'node_id': 'Reader',
+ 'params': {'Reader': {'top_k': 5},
+  'Retriever': {'top_k': 10},
+  'filters': {'device': ['Watchman']}},
+ 'query': 'What is the dimension of the Watchman device',
+ 'root_node': 'Query'}</code></pre>
+</div>
+</div>
+</section>
+<section id="api-demo-query-2" class="slide level2">
+<h2>API Demo Query 2</h2>
+<div class="cell" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1"></a>test_api(<span class="st">"What are the intended use for this device"</span>, <span class="st">"Watchman"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="6">
+<pre><code>{'answers': [{'answer': 'reduce the risk of stroke',
+   'context': 'o close the left atrial appendage in the heart in an effort to reduce the risk of stroke. With all medical procedures there are risks associated with ',
+   'document_id': 'e9f0ff14146b628656fe6d33cecd71f8',
+   'meta': {'_split_id': 14,
+    'device': 'Watchman',
+    'name': 'WATCHMAN_DTP_Brochure.pdf',
+    'page': 6},
+   'offsets_in_context': [{'end': 88, 'start': 63}],
+   'offsets_in_document': [{'end': 663, 'start': 638}],
+   'score': 0.6530258655548096,
+   'type': 'extractive'},
+  {'answer': 'preventing stroke and systemic embolization',
+   'context': 'ation: The WATCHMAN device is efficacious and safe in preventing stroke and systemic embolization. Warfarin and aspirin are given for 45 days after im',
+   'document_id': '1a805861f6e576acb2a44ecb4efba316',
+   'meta': {'_split_id': 1,
+    'device': 'Watchman',
+    'name': 'anticoagulation.pdf',
+    'page': 1},
+   'offsets_in_context': [{'end': 97, 'start': 54}],
+   'offsets_in_document': [{'end': 646, 'start': 603}],
+   'score': 0.6453192234039307,
+   'type': 'extractive'},
+  {'answer': 'met the primary safety end point with 0.5% (2/400) of patients experiencing a safety end point event within 7 days postprocedure or at hospital discharge',
+   'context': ' met the primary safety end point with 0.5% (2/400) of patients experiencing a safety end point event within 7 days postprocedure or at hospital discharge',
+   'document_id': '58e6f926356d4291b4018f39eb2e8ba7',
+   'meta': {'_split_id': 9,
+    'device': 'Watchman',
+    'name': 'CIRCULATIONAHA.120.050117.pdf',
+    'page': 2},
+   'offsets_in_context': [{'end': 154, 'start': 1}],
+   'offsets_in_document': [{'end': 757, 'start': 604}],
+   'score': 0.6062761545181274,
+   'type': 'extractive'},
+  {'answer': 'See if the WATCHMAN Implant is right for you \uf054',
+   'context': ' the catheter insertion site, clot formation on the See if the WATCHMAN Implant is right for you \uf054 ×\x0cdevice, cranial bleed, excessive bleeding, gastro',
+   'document_id': '438ddeafa3fc513634e5e251c81f204f',
+   'meta': {'_split_id': 7,
+    'device': 'Watchman',
+    'name': 'WATCHMAN Procedure vs. Blood Thinners.pdf',
+    'page': 4},
+   'offsets_in_context': [{'end': 98, 'start': 52}],
+   'offsets_in_document': [{'end': 906, 'start': 860}],
+   'score': 0.5798835754394531,
+   'type': 'extractive'},
+  {'answer': '',
+   'context': None,
+   'document_id': None,
+   'meta': {},
+   'offsets_in_context': [{'end': 0, 'start': 0}],
+   'offsets_in_document': [{'end': 0, 'start': 0}],
+   'score': 0.5718045609494627,
+   'type': 'extractive'}],
+ 'documents': [{'content': 'Answer a few questions and get a customized guide Questions to Ask Your Doctor What are the risks and benefits of the different blood thinners? • Does my lifestyle or health history put me at risk for serious bleeding? • Am I a candidate for left atrial appendage closure? • What should I know about the WATCHMAN Implant? • What are the differences in cost between blood thinners and the WATCHMAN Implant? • See if the WATCHMAN Implant is right for you \uf054 ×\x0cWATCHMAN is the only FDA-approved implant proven to safely and effectively lower stroke risk in people with AFib not caused by heart valve problems. NEXT: Why Choose WATCHMAN 2 WATCHMAN is for people with atrial fibrillation not caused by a heart valve problem who need an alternative to blood thinners. This website is intended to provide patients and caregivers with some information about the WATCHMAN Implant. It may help prepare you for talking to your doctor about your options for reducing stroke risk. Important Safety Information The WATCHMAN and WATCHMAN FLX Devices are permanent implants designed to close the left atrial appendage in the heart in an effort to reduce the risk of stroke.',
+   'content_type': 'text',
+   'embedding': None,
+   'id': '331c892df748bd709f621cb521af8250',
+   'meta': {'_split_id': 9,
+    'device': 'Watchman',
+    'name': 'Alternative to Warfarin – WATCHMAN Implant.pdf',
+    'page': 4},
+   'score': 0.8224525472443251},
+  {'content': 'This website is intended to provide patients and caregivers with some information about the WATCHMAN Implant. It may help prepare you for talking to your doctor about your options for reducing stroke risk. Important Safety Information The WATCHMAN and WATCHMAN FLX Devices are permanent implants designed to close the left atrial appendage in the heart in an effort to reduce the risk of stroke. With all medical procedures there are risks associated with the implant procedure and the use of the device. The risks include but are not limited to accidental heart puncture, air embolism, allergic reaction, anemia, anesthesia risks, arrhythmias, AV (Arteriovenous) fistula, bleeding or throat pain from the TEE (Trans Esophageal Echo) probe, blood clot or air bubbles in the lungs or other organs, bruising at the catheter insertion site, clot formation on the See if the WATCHMAN Implant is right for you \uf054 ×\x0cdevice, cranial bleed, excessive bleeding, gastrointestinal bleeding, groin puncture bleed, hypotension, infection/pneumonia, pneumothorax, pulmonary edema, pulmonary vein obstruction, renal failure, stroke, thrombosis and transient ischemic attack. In rare cases death can occur.',
+   'content_type': 'text',
+   'embedding': None,
+   'id': '438ddeafa3fc513634e5e251c81f204f',
+   'meta': {'_split_id': 7,
+    'device': 'Watchman',
+    'name': 'WATCHMAN Procedure vs. Blood Thinners.pdf',
+    'page': 4},
+   'score': 0.7826318165191529},
+  {'content': 'This website is intended to provide patients and caregivers with some information about the WATCHMAN Implant. It may help prepare you for talking to your doctor about your options for reducing stroke risk. Important Safety Information The WATCHMAN and WATCHMAN FLX Devices are permanent implants designed to close the left atrial appendage in the heart in an effort to reduce the risk of stroke. With all medical procedures there are risks associated with the implant procedure and the use of the device. The risks include but are not limited to accidental heart puncture, air embolism, allergic reaction, anemia, anesthesia risks, arrhythmias, AV (Arteriovenous) fistula, bleeding or throat pain from the TEE (Trans Esophageal Echo) probe, blood clot or air bubbles in the lungs or other organs, bruising at the catheter insertion site, clot formation on the device, cranial bleed, excessive bleeding, gastrointestinal bleeding, groin puncture bleed, hypotension, infection/pneumonia, pneumothorax, pulmonary edema, pulmonary vein obstruction, renal failure, stroke, thrombosis and transient ischemic attack. In rare cases death can occur.',
+   'content_type': 'text',
+   'embedding': None,
+   'id': 'a3df60ddf2bfa0badaf97f73e47b9d89',
+   'meta': {'_split_id': 7,
+    'device': 'Watchman',
+    'name': 'How The WATCHMAN Device Works.pdf',
+    'page': 4},
+   'score': 0.78167045192624},
+  {'content': 'Holmes DR Jr, Doshi SK, Kar S, et al. Left atrial appendage closure as an alternative to warfarin for stroke prevention in atrial fibrillation: a patientlevel meta-analysis. J Am Coll Cardiol. 2015;65(24):2614-2623. 3. Price MJ, Reddy VY, Valderrábano M, et al. Bleeding outcomes after left atrial appendage closure compared with long-term warfarin. JACC Cardiovasc Interv.2015;8(15):1925-1932. The WATCHMAN Implant is for people with atrial fibrillation not caused by a heart valve problem who need an alternative to blood thinners. This website is intended to provide patients and caregivers with some information about the WATCHMAN Implant. It may help prepare you for talking to your doctor about your options for reducing stroke risk. Important Safety Information The WATCHMAN and WATCHMAN FLX Devices are permanent implants designed to close the left atrial appendage in the heart in an effort to reduce the risk of stroke. 00:31 See if the WATCHMAN Implant is right for you \uf054 ×\x0cWith all medical procedures there are risks associated with the implant procedure and the use of the device.',
+   'content_type': 'text',
+   'embedding': None,
+   'id': '3fa0dad3f5aad39130fc7d391359f1e9',
+   'meta': {'_split_id': 3,
+    'device': 'Watchman',
+    'name': 'WATCHMAN Implant for Non-Valvular Afib Stroke Risk.pdf',
+    'page': 3},
+   'score': 0.774942853968285},
+  {'content': 'This very important card lets medical personnel know that you have the WATCHMAN Implant. Remember to carry it with you at all times and register it in case it gets lost. Go to watchman.com/register. What is a WATCHMAN Implant Card and why do I need it? I didn’t have any problems getting the [WATCHMAN] procedure and I feel so much better since I had it. It makes me feel good that I can get up and go and not worry. —CAMILLE, 89 LIVING LIFE WITH THE WATCHMAN IMPLANT 10 11\x0cImportant Safety Information The WATCHMAN™ and WATCHMAN FLX Devices are permanent implants designed to close the left atrial appendage in the heart in an effort to reduce the risk of stroke. With all medical procedures there are risks associated with the implant procedure and the use of the device.',
+   'content_type': 'text',
+   'embedding': None,
+   'id': 'e9f0ff14146b628656fe6d33cecd71f8',
+   'meta': {'_split_id': 14,
+    'device': 'Watchman',
+    'name': 'WATCHMAN_DTP_Brochure.pdf',
+    'page': 6},
+   'score': 0.7511128358100386},
+  {'content': 'The WATCHMAN Implant Reduces the Risk of Stroke from Non‑valvular AFib See if the WATCHMAN Implant is right for you \uf054 × MENU\x0cSee How The WATCHMAN Implant Works Over 1/3 of people with AFib feel trapped between the fear of having a stroke and fear of the risks associated with blood thinners. In fact, more than 4 in 5 people with AFib taking a blood thinner (83%) say they would be willing to try a different treatment to help reduce their risk of stroke. See What Makes the WATCHMAN Implant Different Beyond Blood Thinners 1 The WATCHMAN Implant effectively reduces the risk of stroke—without the risk of bleeding that can come with the long-term use of blood thinners. See Why People Choose the WATCHMAN Implant For All the Right Reasons 2,3 We have a lot of freedom now to do the things that we love to do together, without all those fears. — LINDA, 76 03:42 See if the WATCHMAN Implant is right for you \uf054 ×\x0cSee this story about what life could be like without blood thinners after having the WATCHMAN Implant procedure. ©2022 Boston Scientific Corporation and its affiliates.',
+   'content_type': 'text',
+   'embedding': None,
+   'id': '8bf8d6f108a4ec2f38b99d522be93570',
+   'meta': {'_split_id': 1,
+    'device': 'Watchman',
+    'name': 'WATCHMAN Implant for Non-Valvular Afib Stroke Risk.pdf',
+    'page': 1},
+   'score': 0.7205184917552013},
+  {'content': 'As with any medical procedure, there are risks involved with the WATCHMAN Implant. See the Important Safety Information below for a list of possible complications, and ask your cardiologist about the risks and benefits of the WATCHMAN Implant. #1 Doctor Recommended 3* See if the WATCHMAN Implant is right for you \uf054 ×\x0cHear From the Doctors Hear from a team of doctors who perform the WATCHMAN Implant and see inside the procedure room Get a quick guide on the WATCHMAN Implant that you can share with your doctor or loved one. Download PDF The WATCHMAN Implant Alternative If you have AFib not caused by a heart valve problem and you need an alternative to blood thinners, the WATCHMAN Implant may be right for you. NEXT: Why Choose WATCHMAN The WATCHMAN Implant is for people with atrial fibrillation not caused by a heart valve problem who need an alternative to blood thinners. This website is intended to provide patients and caregivers with some information about the WATCHMAN Implant. It may help prepare you for talking to your doctor about your options for reducing stroke risk.',
+   'content_type': 'text',
+   'embedding': None,
+   'id': '5ee108bc25367c69faa77950646415df',
+   'meta': {'_split_id': 6,
+    'device': 'Watchman',
+    'name': 'How The WATCHMAN Device Works.pdf',
+    'page': 3},
+   'score': 0.7060864050820224},
+  {'content': 'The WATCHMAN device, which closes the left atrial appendage, is non-inferior to warfarin to prevent embolic events in clinical trials. Post-procedural anticoagulation is needed to avoid device-related thrombosis. The use of anticoagulants after WATCHMAN implantation in patients with high bleeding risks has been a source of debate. Objective: This article summarizes the current evidence on anticoagulation following the implantation of the WATCHMAN device, focusing on patients who have an absolute contraindication to oral anticoagulation. Observation: The WATCHMAN device is efficacious and safe in preventing stroke and systemic embolization. Warfarin and aspirin are given for 45 days after implantation. If TEE at 45 days shows minimal residual peri-device flow (≤ 5mm) and no device-related thrombus, warfarin is stopped. This is followed by aspirin and clopidogrel for six months, then aspirin indefinitely. Antithrombotic therapy with aspirin and clopidogrel for six months followed by daily aspirin indefinitely may be feasible for patients with an absolute contraindication to OAC. DOACs are more convenient to use than warfarin, and limited evidence suggests that they are not inferior following implantation of the device. Conclusion: Following the WATCHMAN implantation, the most often utilized regimen is warfarin followed by antiplatelet treatment.',
+   'content_type': 'text',
+   'embedding': None,
+   'id': '1a805861f6e576acb2a44ecb4efba316',
+   'meta': {'_split_id': 1,
+    'device': 'Watchman',
+    'name': 'anticoagulation.pdf',
+    'page': 1},
+   'score': 0.703969269867837},
+  {'content': 'Who the WATCHMAN Implant Is For Have atrial fi\xad brillation not caused by a heart valve problem (also known as non-valvular AFib) • Have been recommended for blood thinning medicines by their doctor • Can take short term blood thinners but need an alternative • Have had major bleeding while taking blood thinners • Have a lifestyle, occupation, or condition that puts them at risk for major bleeding • Have difficulties taking their blood thinner as prescribed (staying in INR range, following dietary restrictions, missing doses or inability to afford the prescription) • If you’re ready to talk to your doctor about the WATCHMAN Implant, get a customized guide that can help you ask the right questions. NEXT: Getting the WATCHMAN Implant The WATCHMAN Implant is for people with atrial fibrillation not caused by a heart valve problem who need an alternative to blood thinners. This website is intended to provide patients and caregivers with some information about the WATCHMAN Implant. It may help prepare you for talking to your doctor about your options for reducing stroke risk.',
+   'content_type': 'text',
+   'embedding': None,
+   'id': '35c183455e76690105d77d646ed08d3f',
+   'meta': {'_split_id': 6,
+    'device': 'Watchman',
+    'name': 'WATCHMAN Procedure vs. Blood Thinners.pdf',
+    'page': 4},
+   'score': 0.6790468747619063},
+  {'content': '• The PINNACLE FLX study (Protection Against Embolism for Nonvalvular AF Patients: Investigational Device Evaluation of the Watchman FLX LAA Closure Technology) evaluated a next-generation left atrial appendage closure device in patients at high thromboembolic risk with nonvalvular atrial fibrillation who were eligible for anticoagulation therapy. • The device implantation was successful without prohibitive safety issues and displayed effective appendage closure on transesophageal echocardiography imaging at 12 months. What Are the Clinical Implications? • The left atrial appendage closure device met the primary safety end point with 0.5% (2/400) of patients experiencing a safety end point event within 7 days postprocedure or at hospital discharge. • The next-generation left atrial appendage closure device met the primary effectiveness end point with a left atrial appendage closure incidence (&lt;5 mm peri-device flow) of 100.0% at both 45 days and 1 year after the procedure (P&lt;0.0001 versus prespecified performance goals for both end points). Downloaded from http://ahajournals.org by on October 22, 2022\x0cKar et al\x08 LAA Closure PINNACLE FLX Trial May 4, 2021\x08 Circulation. 2021;143:1754–1762.',
+   'content_type': 'text',
+   'embedding': None,
+   'id': '58e6f926356d4291b4018f39eb2e8ba7',
+   'meta': {'_split_id': 9,
+    'device': 'Watchman',
+    'name': 'CIRCULATIONAHA.120.050117.pdf',
+    'page': 2},
+   'score': 0.6748636691647826}],
+ 'no_ans_gap': 9.692201137542725,
+ 'node_id': 'Reader',
+ 'params': {'Reader': {'top_k': 5},
+  'Retriever': {'top_k': 10},
+  'filters': {'device': ['Watchman']}},
+ 'query': 'What are the intended use for this device',
+ 'root_node': 'Query'}</code></pre>
+</div>
+</div>
+</section>
+<section id="api-demo-query-3" class="slide level2">
+<h2>API Demo Query 3</h2>
+<div class="cell" data-execution_count="4">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1"></a>test_api(<span class="st">"What are the intended use for this device"</span>, <span class="st">"Atriclip"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="7">
+<pre><code>{'answers': [{'answer': 'patients to exclude the LAA during concomitant cardiac surgery',
+   'context': 'short-term and has been approved for use in patients to exclude the LAA during concomitant cardiac surgery. This is the ﬁrst such device designed spec',
+   'document_id': '2832e726a2a9f8062b960d1ae3f5496',
+   'meta': {'_split_id': 28,
+    'device': 'Atriclip',
+    'name': '1-s2.0-S0022522311008282-main.pdf',
+    'page': 6},
+   'offsets_in_context': [{'end': 106, 'start': 44}],
+   'offsets_in_document': [{'end': 423, 'start': 361}],
+   'score': 0.5677024126052856,
+   'type': 'extractive'},
+  {'answer': '',
+   'context': None,
+   'document_id': None,
+   'meta': {},
+   'offsets_in_context': [{'end': 0, 'start': 0}],
+   'offsets_in_document': [{'end': 0, 'start': 0}],
+   'score': 0.5561953180799836,
+   'type': 'extractive'},
+  {'answer': 'methods to exclude or remove the appendage',
+   'context': 'patients with AF are thought to originate in the LAA, methods to exclude or remove the appendage might mitigate this risk without the dangers of antic',
+   'document_id': '2832e726a2a9f8062b960d1ae3f5496',
+   'meta': {'_split_id': 28,
+    'device': 'Atriclip',
+    'name': '1-s2.0-S0022522311008282-main.pdf',
+    'page': 6},
+   'offsets_in_context': [{'end': 96, 'start': 54}],
+   'offsets_in_document': [{'end': 989, 'start': 947}],
+   'score': 0.5084021091461182,
+   'type': 'extractive'},
+  {'answer': 'suitable for only a welldeﬁned group of patients with suitable anatomy',
+   'context': 'us periprocedural complications and are suitable for only a welldeﬁned group of patients with suitable anatomy. Implantation was considered as success',
+   'document_id': 'd7bd0d1d89e0d8dff3ee53e53173aed0',
+   'meta': {'_split_id': 13,
+    'device': 'Atriclip',
+    'name': '1-s2.0-S0010865017300772-main.pdf',
+    'page': 3},
+   'offsets_in_context': [{'end': 110, 'start': 40}],
+   'offsets_in_document': [{'end': 946, 'start': 876}],
+   'score': 0.48074859380722046,
+   'type': 'extractive'},
+  {'answer': 'thromboembolic event prevention',
+   'context': 'at Watchman is not inferior to permanent anticoagulation in thromboembolic event prevention and is associated with less frequent bleeding complication',
+   'document_id': 'd7bd0d1d89e0d8dff3ee53e53173aed0',
+   'meta': {'_split_id': 13,
+    'device': 'Atriclip',
+    'name': '1-s2.0-S0010865017300772-main.pdf',
+    'page': 3},
+   'offsets_in_context': [{'end': 91, 'start': 60}],
+   'offsets_in_document': [{'end': 656, 'start': 625}],
+   'score': 0.4594478905200958,
+   'type': 'extractive'}],
+ 'documents': [{'content': 'We do use TEE routinely in all of our cases. I have also performed this multiple times via a minimally invasive approach when performing a hybrid AF procedure or thoracoscopic AF procedure. In this situation, the heart is in its native position, and we can visualize by TEE before we deploy the clip. Dr Bryan Meyers (St Louis, Mo). So you showed efﬁcacy in the ability to exclude the appendage. The next step is going to be to show clinical effectiveness, and you are going to need a huge trial, aren’t you, for the rare events you are trying to prevent? Dr Ailawadi. Correct. Dr Meyers. Any idea of where that is going next? Dr Ailawadi. This is the million dollar question. I suspect it will require a large trial of at least 2000 patients. We will need to see what type of funding is available for this type of study. Ultimately, this will be required, not just with this particular device but with all the devices to see the clinical effectiveness of stroke reduction. Ailawadi et al Acquired Cardiovascular Disease The Journal of Thoracic and Cardiovascular Surgery c Volume 142, Number 5 1009 ACD\x0cTABLE E1.',
+   'content_type': 'text',
+   'embedding': None,
+   'id': 'cff2451e5c4690fe93e981a2474f502c',
+   'meta': {'_split_id': 46,
+    'device': 'Atriclip',
+    'name': '1-s2.0-S0022522311008282-main.pdf',
+    'page': 8},
+   'score': 0.7565229854983455},
+  {'content': 'The most widely used endocardial device is the Watchman device, which is a percutaneously delivered polyester fabric on a nitinol frame ([Figure 1B]). The Lariat device utilizes a combined percutaneous and epicardial approach to deliver a lasso around the appendage guided by an intraluminal magnet tip ([Figure 1A]). The Atriclip is made of a two polyester-covered parallel tubes with nitinol springs ([Figure 1C]). Generally, endocardial devices are in contact with blood stream, and for that reason, the recommendation is to resume anticoagulation for 2 months after endocardial devices are implanted, making this a less attractive option for patients with absolute contraindications for AC. Also, endocardial devices do not sit as well within LAAs with abnormal morphologies; a situation better addressed by epicardial devices. Our preference is to use the Atriclip epicardial clip. In our experience, this device is easy to use and allows adjusting position of the clip after deployment as needed. Also, the Atriclip was not associated with pericarditis and/ or thrombosis, which makes it in our opinion safer that the reported outcomes with the Lariat system. [17-19] These reports however are not large enough to draw definitive conclusions.',
+   'content_type': 'text',
+   'embedding': None,
+   'id': '456a6edbd870190c68efe8d17b15dd58',
+   'meta': {'_split_id': 3,
+    'device': 'Atriclip',
+    'name': 'jafib-11-02087.pdf',
+    'page': 1},
+   'score': 0.7011848018699821},
+  {'content': 'This is a brief procedure involving three small keyhole incisions less than 1cm long. The design allows it to be introduced via keyhole on the left side of the chest allowing for quick recovery and short hospital stay. This permanent AtriClip heart implant effectively reduces the risk of stroke without the risk of bleeding that can come with the long-term use of blood thinners. The AtriClip implant is designed to permanently close off the left atrial appendage and keep those blood clots from escaping. Since this device is placed on the outside of the heart, it is not in contact with blood. Unlike other devices which are placed inside the heart this device does not require any need for blood thinners. However, Prof Weerasooriya will make the final recommendation depending on your health history. AtriClip is the only device of its kind approved by the U.S. Food and Drug Administration (FDA) and the TGA in Australia. More than 200,000 AtriClip procedures have been performed worldwide. And with over 10 years of worldwide clinical studies behind it, AtriClip has a proven safety record.',
+   'content_type': 'text',
+   'embedding': None,
+   'id': '7087dab985136a73607709367040803c',
+   'meta': {'_split_id': 6,
+    'device': 'Atriclip',
+    'name': 'Booklet-AtriClip.pdf',
+    'page': 6},
+   'score': 0.676427210540014},
+  {'content': 'Moreover, among the patients who can be on AC, only sixty percent are able to maintain a therapeutic international normalized ratio (INR). This has traditionally left almost half of AF patients at a significant stroke risk without protection. The advent of newer non-vitamin K anticoagulants (NOACs) has slightly improved the problem given their improved intracranial bleeding profile, the inherent and still significant risk of bleeding from anticoagulation persists. \x0cwww.jafib.com Apr - May 2019 | Volume-11 | Issue-6 Featured Review Journal of Atrial Fibrillation Featured Review Journal of Atrial Fibrillation 2 Featured Review In this article, we outline our experience using the Atriclip and our recommendations for its use and management after the procedure. Although no societal guidelines exist to date, our recommendations are in agreement with other reports from high-volume centers publishing their experiences with the Atriclip. The AtriClip This LAA occlusion device is made of two parallel titanium tubes with elastic nitinol springs covered by knit braided polyester. The delivery allows for application on a beating heart, as well as allows redeployment in case of initial suboptimal placement.',
+   'content_type': 'text',
+   'embedding': None,
+   'id': '7705e94a62494865acec9e7165919709',
+   'meta': {'_split_id': 5,
+    'device': 'Atriclip',
+    'name': 'jafib-11-02087.pdf',
+    'page': 1},
+   'score': 0.6741089781904468},
+  {'content': 'It is important to note the 2 late neurologic events in these patients. Both of these were attributed by the source reports to hypertensive strokes, but a cardioembolic source cannot be ruled out entirely. On the basis of these ﬁndings, the AtriClip device demonstrates the safety and efﬁcacy of LAA occlusion in the short-term and has been approved for use in patients to exclude the LAA during concomitant cardiac surgery. This is the ﬁrst such device designed speciﬁcally for the LAA that is now available in the United States. The most devastating complication from AF is stroke. It has been estimated that 20% to 30% of strokes are attributable to embolic events that develop as a consequence of AF. Moreover, current anticoagulation strategies carry a major risk of bleeding of 2.3% and intracranial hemorrhage risk of 0.9% yearly.12 Because an estimated 90% of thromboembolic events in patients with AF are thought to originate in the LAA, methods to exclude or remove the appendage might mitigate this risk without the dangers of anticoagulation. Before recent novel approaches, surgical LAA exclusion involved suture ligation or staple excision.',
+   'content_type': 'text',
+   'embedding': None,
+   'id': '2832e726a2a9f8062b960d1ae3f5496',
+   'meta': {'_split_id': 28,
+    'device': 'Atriclip',
+    'name': '1-s2.0-S0022522311008282-main.pdf',
+    'page': 6},
+   'score': 0.6709862827274857},
+  {'content': "= 142 TIA 4 (2.8%) CVA 1 (0.7%) Antiaggregation usage 62 (43.7%) Warfarin usage 55 (38.7%) NOAC usage 20 (14.1%) LMWH usage 5 (3.5%) TIA, transitory ischemic attack; CVA, cerebrovascular event; NOAC, novel oral anticoagulants; LMWH, low molecular weight heparin. Fig. 1 – Freedom from TIA/CVA during follow-up perriod. c o r e t v a s a 5 9 ( 2 0 1 7 ) e 3 7 6 – e 3 8 0 e378\x0cperhaps the most frequently implanted and clinically tested device of the percutaneous closure devices commercially available. Experience and trials (such as PROTECT-AF, PREVAIL) suggest that Watchman is not inferior to permanent anticoagulation in thromboembolic event prevention and is associated with less frequent bleeding complications than permanent anticoagulation. However, percutaneous devices are associated with a clinically signiﬁcant rate of serious periprocedural complications and are suitable for only a welldeﬁned group of patients with suitable anatomy. Implantation was considered as successful also if residual peri-device ﬂow (endoleak) existed but the jet width was below 5 mm, what could be prothrombogenic issue in patients' future life. In the interventional group was described high rate of periprocedural complications [18].",
+   'content_type': 'text',
+   'embedding': None,
+   'id': 'd7bd0d1d89e0d8dff3ee53e53173aed0',
+   'meta': {'_split_id': 13,
+    'device': 'Atriclip',
+    'name': '1-s2.0-S0010865017300772-main.pdf',
+    'page': 3},
+   'score': 0.668878081563224},
+  {'content': 'This prospective study protocol used Bayesian analyses for the primary safety and efﬁcacy analyses and was reviewed by the Food and Drug Administration (FDA) Center for Devices and Radiological Health before study initiation and in accordance with the Center for Devices and Radiological Health’s ‘‘Guidance for the Use of Bayesian Statistics in Medical Device Clinical Trials.’’ In the ﬁnal analysis, the posterior distribution of LAA exclusion success rate and serious device-related AE rate are summarized graphically via histogram and with 1-sided 95% Abbreviations and Acronyms AF ¼ atrial ﬁbrillation AE ¼ adverse event AVR ¼ aortic valve replacement CABG ¼ coronary artery bypass grafting CHADS ¼ Congestive Heart Failure, Hypertension, Age&gt;75 years, Diabetes Mellitus, Stroke CTA ¼ computed tomography angiography EXCLUDE ¼ Exclusion of Left Atrial Appendage with AtriClip Exclusion Device in Patients Undergoing Concomitant Cardiac Surgery FDA ¼ Food and Drug Administration LAA ¼ left atrial appendage TEE ¼ transesophageal echocardiography Ailawadi et al Acquired Cardiovascular Disease The Journal of Thoracic and Cardiovascular Surgery c Volume 142, Number 5 1003 ACD\x0cBayesian credible intervals. The Bayesian posterior probability of LAA exclusion success rate greater than 95% and Bayesian posterior probability of serious device-related AE rate less than 10% are reported.',
+   'content_type': 'text',
+   'embedding': None,
+   'id': '3abcf31d3c30d5646eafc5f463341c4a',
+   'meta': {'_split_id': 15,
+    'device': 'Atriclip',
+    'name': '1-s2.0-S0022522311008282-main.pdf',
+    'page': 2},
+   'score': 0.6683999449309437},
+  {'content': "Implantation was considered as successful also if residual peri-device ﬂow (endoleak) existed but the jet width was below 5 mm, what could be prothrombogenic issue in patients' future life. In the interventional group was described high rate of periprocedural complications [18]. Other less frequently used devices for percutaneous LAA occlusion are Amplatzer [19] or Lariat using hybrid, percutaneous and epicardial approach for ligation of LAA [20]. There are still some controversies about the type of AF and the risk of stroke. Several randomized and observational studies had documented a similar risk of thromboembolic events in patients with paroxysmal and persistent AF [21–24]. In contrast, other studies have shown that the risk of thromboembolism is lower in anticoagulated patients with paroxysmal AF than in those with persistent AF [25,26]. All of these results should be adjusted to the risk proﬁle of patients which is expressed, for example, by CHA2 DS2 -VASc score. We also have to comment on the patients with insufﬁcient perioperative implantation in our study. In two patients the AtriClip was positioned distally due to non-ideal anatomy (appendage with more than one part – ‘‘cauliﬂower anatomy’’).",
+   'content_type': 'text',
+   'embedding': None,
+   'id': '65ede36388556cf669ee02541513d443',
+   'meta': {'_split_id': 14,
+    'device': 'Atriclip',
+    'name': '1-s2.0-S0010865017300772-main.pdf',
+    'page': 4},
+   'score': 0.6666839790952104},
+  {'content': 'This prospective study protocol used Bayesian analyses for the primary safety and efﬁcacy analyses and was reviewed by the Food and Drug Administration (FDA) Center for Devices and Radiological Health before study initiation and in accordance with the Center for Devices and Radiological Health’s ‘‘Guidance for the Use of Bayesian Statistics in Medical Device Clinical Trials.’’ In the ﬁnal analysis, the posterior distribution of LAA exclusion success rate and serious device-related AE rate are summarized graphically via histogram and with 1-sided 95% Abbreviations and Acronyms AF ¼ atrial ﬁbrillation AE ¼ adverse event AVR ¼ aortic valve replacement CABG ¼ coronary artery bypass grafting CHADS ¼ Congestive Heart Failure, Hypertension, Age&gt;75 years, Diabetes Mellitus, Stroke CTA ¼ computed tomography angiography EXCLUDE ¼ Exclusion of Left Atrial Appendage with AtriClip Exclusion Device in Patients Undergoing Concomitant Cardiac Surgery FDA ¼ Food and Drug Administration LAA ¼ left atrial appendage TEE ¼ transesophageal echocardiography Ailawadi et al Acquired Cardiovascular Disease The Journal of Thoracic and Cardiovascular Surgery c Volume 142, Number 5 1003 ACD\x0cBayesian credible intervals. The Bayesian posterior probability of LAA exclusion success rate greater than 95% and Bayesian posterior probability of serious device-related AE rate less than 10% are reported. AEs were summarized on the basis of seriousness, causality and association with the device, procedure, or comorbid condition.',
+   'content_type': 'text',
+   'embedding': None,
+   'id': 'd04f1a1eadadd6ec3a742a43733ed251',
+   'meta': {'_split_id': 16,
+    'device': 'Atriclip',
+    'name': '1-s2.0-S0022522311008282-main.pdf',
+    'page': 2},
+   'score': 0.6657806587915504},
+  {'content': "Both studies included only patients treated with a sternotomy approach. In a paper of Starck et al. [17], they demonstrated complete electrical isolation of the LAA using the AtriClip, what could be beneﬁcial during surgical ablation of atrial ﬁbrillation. Beside the surgical methods of LAA occlusion, different types of catheter devices are available in clinical practice. The Watchman LAA occlusion device from Boston Scientiﬁc is Table 4 – Postoperative characteristics. Variables No. = 155 Revision for bleeding 10 (6.4%) TIA 0 (0%) CVA 1 (0.6%) ICU stay (days) 4.1 Æ 3.8 Hospital stay (days) 12.1 Æ 5.2 TIA, transitory ischemic attack; CVA, cerebrovascular event. Table 5 – Patients' follow-up. Variables No. = 142 TIA 4 (2.8%) CVA 1 (0.7%) Antiaggregation usage 62 (43.7%) Warfarin usage 55 (38.7%) NOAC usage 20 (14.1%) LMWH usage 5 (3.5%) TIA, transitory ischemic attack; CVA, cerebrovascular event; NOAC, novel oral anticoagulants; LMWH, low molecular weight heparin. Fig. 1 – Freedom from TIA/CVA during follow-up perriod.",
+   'content_type': 'text',
+   'embedding': None,
+   'id': '816a0b3e4b245687bb65bdd2e7da104b',
+   'meta': {'_split_id': 12,
+    'device': 'Atriclip',
+    'name': '1-s2.0-S0010865017300772-main.pdf',
+    'page': 3},
+   'score': 0.663139058315808}],
+ 'no_ans_gap': 9.881159663200378,
+ 'node_id': 'Reader',
+ 'params': {'Reader': {'top_k': 5},
+  'Retriever': {'top_k': 10},
+  'filters': {'device': ['Atriclip']}},
+ 'query': 'What are the intended use for this device',
+ 'root_node': 'Query'}</code></pre>
+</div>
 </div>
 </section>
 <section id="any-limitations" class="slide level2">
@@ -697,7 +1199,24 @@
         button.classList.add('code-copy-button-checked');
         var currentTitle = button.getAttribute("title");
         button.setAttribute("title", "Copied!");
+        let tooltip;
+        if (window.bootstrap) {
+          button.setAttribute("data-bs-toggle", "tooltip");
+          button.setAttribute("data-bs-placement", "left");
+          button.setAttribute("data-bs-title", "Copied!");
+          tooltip = new bootstrap.Tooltip(button, 
+            { trigger: "manual", 
+              customClass: "code-copy-button-tooltip",
+              offset: [0, -8]});
+          tooltip.show();    
+        }
         setTimeout(function() {
+          if (tooltip) {
+            tooltip.hide();
+            button.removeAttribute("data-bs-title");
+            button.removeAttribute("data-bs-toggle");
+            button.removeAttribute("data-bs-placement");
+          }
           button.setAttribute("title", currentTitle);
           button.classList.remove('code-copy-button-checked');
         }, 1000);
@@ -727,31 +1246,50 @@
       for (var i=0; i<noterefs.length; i++) {
         const ref = noterefs[i];
         tippyHover(ref, function() {
-          let href = ref.getAttribute('href');
+          // use id or data attribute instead here
+          let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
           try { href = new URL(href).hash; } catch {}
           const id = href.replace(/^#\/?/, "");
           const note = window.document.getElementById(id);
           return note.innerHTML;
         });
       }
+      const findCites = (el) => {
+        const parentEl = el.parentElement;
+        if (parentEl) {
+          const cites = parentEl.dataset.cites;
+          if (cites) {
+            return {
+              el,
+              cites: cites.split(' ')
+            };
+          } else {
+            return findCites(el.parentElement)
+          }
+        } else {
+          return undefined;
+        }
+      };
       var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
       for (var i=0; i<bibliorefs.length; i++) {
         const ref = bibliorefs[i];
-        const cites = ref.parentNode.getAttribute('data-cites').split(' ');
-        tippyHover(ref, function() {
-          var popup = window.document.createElement('div');
-          cites.forEach(function(cite) {
-            var citeDiv = window.document.createElement('div');
-            citeDiv.classList.add('hanging-indent');
-            citeDiv.classList.add('csl-entry');
-            var biblioDiv = window.document.getElementById('ref-' + cite);
-            if (biblioDiv) {
-              citeDiv.innerHTML = biblioDiv.innerHTML;
-            }
-            popup.appendChild(citeDiv);
+        const citeInfo = findCites(ref);
+        if (citeInfo) {
+          tippyHover(citeInfo.el, function() {
+            var popup = window.document.createElement('div');
+            citeInfo.cites.forEach(function(cite) {
+              var citeDiv = window.document.createElement('div');
+              citeDiv.classList.add('hanging-indent');
+              citeDiv.classList.add('csl-entry');
+              var biblioDiv = window.document.getElementById('ref-' + cite);
+              if (biblioDiv) {
+                citeDiv.innerHTML = biblioDiv.innerHTML;
+              }
+              popup.appendChild(citeDiv);
+            });
+            return popup.innerHTML;
           });
-          return popup.innerHTML;
-        });
+        }
       }
     });
     </script>
