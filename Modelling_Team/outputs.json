@@ -126,12 +126,12 @@
             ]
         },
         {
-            "query": "What are contraindications for this device?Who should not use this device?",
+            "query": "What are contraindications for this device?",
             "answers": [
                 {
                     "answer": "",
                     "type": "extractive",
-                    "score": 0.79689851564201,
+                    "score": 0.7230697662557724,
                     "context": null,
                     "offsets_in_document": [
                         {
@@ -149,9 +149,34 @@
                     "meta": {}
                 },
                 {
+                    "answer": "anticoagulation",
+                    "type": "extractive",
+                    "score": 0.6416284441947937,
+                    "context": "lation. This may Favor the Amulet for NVAF with contraindication to anticoagulation. The FDA in 2021 has approved the Amulet occluder for stroke preve",
+                    "offsets_in_document": [
+                        {
+                            "start": 182,
+                            "end": 197
+                        }
+                    ],
+                    "offsets_in_context": [
+                        {
+                            "start": 68,
+                            "end": 83
+                        }
+                    ],
+                    "document_id": "61240259de465c85c6eacb3cdb1a8b65",
+                    "meta": {
+                        "device": "Watchman",
+                        "_split_id": 21,
+                        "page": 6,
+                        "name": "anticoagulation.pdf"
+                    }
+                },
+                {
                     "answer": "real or perceived risk of bleeding",
                     "type": "extractive",
-                    "score": 0.543533205986023,
+                    "score": 0.6388237476348877,
                     "context": " because of absolute or relative contraindications due to real or perceived risk of bleeding. Although left atrial appendage closure is increasingly p",
                     "offsets_in_document": [
                         {
@@ -174,9 +199,34 @@
                     }
                 },
                 {
+                    "answer": "absolute or relative",
+                    "type": "extractive",
+                    "score": 0.6156277060508728,
+                    "context": "highest stroke risk.12 This is related to the presence of either absolute or relative contraindications to anticoagulation due to real or perceived ri",
+                    "offsets_in_document": [
+                        {
+                            "start": 600,
+                            "end": 620
+                        }
+                    ],
+                    "offsets_in_context": [
+                        {
+                            "start": 65,
+                            "end": 85
+                        }
+                    ],
+                    "document_id": "2dfd0709052b1ace8533d7702d9cdba6",
+                    "meta": {
+                        "device": "Watchman",
+                        "_split_id": 4,
+                        "page": 1,
+                        "name": "1-s2.0-S0002870317300881-main.pdf"
+                    }
+                },
+                {
                     "answer": "absolute or relative contraindications due to real or perceived risk of bleeding",
                     "type": "extractive",
-                    "score": 0.406316876411438,
+                    "score": 0.4399983882904053,
                     "context": "ver, they are underused because of absolute or relative contraindications due to real or perceived risk of bleeding. Although left atrial appendage cl",
                     "offsets_in_document": [
                         {
@@ -197,22 +247,47 @@
                         "page": 1,
                         "name": "1-s2.0-S0002870317300881-main.pdf"
                     }
-                },
+                }
+            ]
+        },
+        {
+            "query": "Who should not use this device?",
+            "answers": [
                 {
-                    "answer": "patients who have absolute contraindications to oral anticoagulant therapy",
+                    "answer": "",
                     "type": "extractive",
-                    "score": 0.25026750564575195,
-                    "context": " results should not be generalized to patients who have absolute contraindications to oral anticoagulant therapy. Last, the study sample size was not ",
+                    "score": 0.8009555808317891,
+                    "context": null,
                     "offsets_in_document": [
                         {
-                            "start": 48,
-                            "end": 122
+                            "start": 0,
+                            "end": 0
                         }
                     ],
                     "offsets_in_context": [
                         {
-                            "start": 38,
-                            "end": 112
+                            "start": 0,
+                            "end": 0
+                        }
+                    ],
+                    "document_id": null,
+                    "meta": {}
+                },
+                {
+                    "answer": "patients",
+                    "type": "extractive",
+                    "score": 0.37306657433509827,
+                    "context": "Third, our results should not be generalized to patients who have absolute contraindications to oral anticoagulant therapy. Last, the study sample siz",
+                    "offsets_in_document": [
+                        {
+                            "start": 48,
+                            "end": 56
+                        }
+                    ],
+                    "offsets_in_context": [
+                        {
+                            "start": 48,
+                            "end": 56
                         }
                     ],
                     "document_id": "115ca8a86fd1e8c00536e032f592aabd",
@@ -224,20 +299,20 @@
                     }
                 },
                 {
-                    "answer": "oral anticoagulant therapy",
+                    "answer": "patients",
                     "type": "extractive",
-                    "score": 0.12493831664323807,
-                    "context": "eneralized to patients who have absolute contraindications to oral anticoagulant therapy. Last, the study sample size was not large enough to provide ",
+                    "score": 0.285084068775177,
+                    "context": "follow-up is complete. Third, our results should not be generalized to patients who have absolute contraindications to oral anticoagulant therapy. Las",
                     "offsets_in_document": [
                         {
-                            "start": 975,
-                            "end": 1001
+                            "start": 927,
+                            "end": 935
                         }
                     ],
                     "offsets_in_context": [
                         {
-                            "start": 62,
-                            "end": 88
+                            "start": 71,
+                            "end": 79
                         }
                     ],
                     "document_id": "42f04adb54cc42b9f0caf9798aa00347",
@@ -246,6 +321,56 @@
                         "_split_id": 42,
                         "page": 8,
                         "name": "CIRCULATIONAHA.120.050117.pdf"
+                    }
+                },
+                {
+                    "answer": "patients with high bleeding risks",
+                    "type": "extractive",
+                    "score": 0.03726552426815033,
+                    "context": ". The use of anticoagulants after WATCHMAN implantation in patients with high bleeding risks has been a source of debate. Objective: This article summ",
+                    "offsets_in_document": [
+                        {
+                            "start": 270,
+                            "end": 303
+                        }
+                    ],
+                    "offsets_in_context": [
+                        {
+                            "start": 59,
+                            "end": 92
+                        }
+                    ],
+                    "document_id": "1a805861f6e576acb2a44ecb4efba316",
+                    "meta": {
+                        "device": "Watchman",
+                        "_split_id": 1,
+                        "page": 1,
+                        "name": "anticoagulation.pdf"
+                    }
+                },
+                {
+                    "answer": "73%",
+                    "type": "extractive",
+                    "score": 0.036601997911930084,
+                    "context": "lower use of anticoagulation compared with prior randomized controlled trials on WATCHMAN, as in this cohort 73% were deemed unsuitable to use (N)OAC.",
+                    "offsets_in_document": [
+                        {
+                            "start": 1177,
+                            "end": 1180
+                        }
+                    ],
+                    "offsets_in_context": [
+                        {
+                            "start": 109,
+                            "end": 112
+                        }
+                    ],
+                    "document_id": "e65f788fdc1274ed39d98d58222986ce",
+                    "meta": {
+                        "device": "Watchman",
+                        "_split_id": 56,
+                        "page": 11,
+                        "name": "CIRCEP.118.006841.pdf"
                     }
                 }
             ]
@@ -1512,106 +1637,12 @@
             ]
         },
         {
-            "query": "What are contraindications for this device?Who should not use this device?",
+            "query": "What are contraindications for this device?",
             "answers": [
-                {
-                    "answer": "",
-                    "type": "extractive",
-                    "score": 0.8126510533772191,
-                    "context": null,
-                    "offsets_in_document": [
-                        {
-                            "start": 0,
-                            "end": 0
-                        }
-                    ],
-                    "offsets_in_context": [
-                        {
-                            "start": 0,
-                            "end": 0
-                        }
-                    ],
-                    "document_id": null,
-                    "meta": {}
-                },
-                {
-                    "answer": "poor patient compliance",
-                    "type": "extractive",
-                    "score": 0.18961003422737122,
-                    "context": "ts.1–4 However, relative or absolute contraindications for OAC, poor patient compliance, the necessity for continuous monitoring and an inherent risk ",
-                    "offsets_in_document": [
-                        {
-                            "start": 261,
-                            "end": 284
-                        }
-                    ],
-                    "offsets_in_context": [
-                        {
-                            "start": 64,
-                            "end": 87
-                        }
-                    ],
-                    "document_id": "93ed2a216ab5553d2efd386376b34497",
-                    "meta": {
-                        "device": "Atriclip",
-                        "_split_id": 8,
-                        "page": 2,
-                        "name": "eux211.pdf"
-                    }
-                },
-                {
-                    "answer": "Not using ointments or creams on the wounds",
-                    "type": "extractive",
-                    "score": 0.15779578685760498,
-                    "context": "o be read carefully. This will include the following: Not using ointments or creams on the wounds. If you have any unusual pain or redness, please vis",
-                    "offsets_in_document": [
-                        {
-                            "start": 447,
-                            "end": 490
-                        }
-                    ],
-                    "offsets_in_context": [
-                        {
-                            "start": 54,
-                            "end": 97
-                        }
-                    ],
-                    "document_id": "92731df0ea254f7d6ca51d47f12a5197",
-                    "meta": {
-                        "device": "Atriclip",
-                        "_split_id": 11,
-                        "page": 9,
-                        "name": "Booklet-AtriClip.pdf"
-                    }
-                },
-                {
-                    "answer": "Not using ointments or creams on the wounds",
-                    "type": "extractive",
-                    "score": 0.15779578685760498,
-                    "context": "o be read carefully. This will include the following: Not using ointments or creams on the wounds. If you have any unusual pain or redness, please vis",
-                    "offsets_in_document": [
-                        {
-                            "start": 447,
-                            "end": 490
-                        }
-                    ],
-                    "offsets_in_context": [
-                        {
-                            "start": 54,
-                            "end": 97
-                        }
-                    ],
-                    "document_id": "26f0b30122b310c78040bcddcf629446",
-                    "meta": {
-                        "device": "Atriclip",
-                        "_split_id": 11,
-                        "name": "Booklet-AtriClip.pdf"
-                    }
-                },
                 {
                     "answer": "absolute contraindications to AC or abnormal LAA morphology",
                     "type": "extractive",
-                    "score": 0.11098802089691162,
+                    "score": 0.6915550827980042,
                     "context": "to achieve adequate protection. In this case, absolute contraindications to AC or abnormal LAA morphology both favor the Atriclip over a percutaneous ",
                     "offsets_in_document": [
                         {
@@ -1630,6 +1661,225 @@
                         "device": "Atriclip",
                         "_split_id": 6,
                         "page": 2,
+                        "name": "jafib-11-02087.pdf"
+                    }
+                },
+                {
+                    "answer": "",
+                    "type": "extractive",
+                    "score": 0.6840277798060617,
+                    "context": null,
+                    "offsets_in_document": [
+                        {
+                            "start": 0,
+                            "end": 0
+                        }
+                    ],
+                    "offsets_in_context": [
+                        {
+                            "start": 0,
+                            "end": 0
+                        }
+                    ],
+                    "document_id": null,
+                    "meta": {}
+                },
+                {
+                    "answer": "oral anticoagulants",
+                    "type": "extractive",
+                    "score": 0.6237003207206726,
+                    "context": "ergoing cardiac surgery (with contraindications to treatment with oral anticoagulants) may represent a reasonable adjunct procedure to reduce the risk",
+                    "offsets_in_document": [
+                        {
+                            "start": 1092,
+                            "end": 1111
+                        }
+                    ],
+                    "offsets_in_context": [
+                        {
+                            "start": 66,
+                            "end": 85
+                        }
+                    ],
+                    "document_id": "3ddb6f3ed59d01512afda5de5e342385",
+                    "meta": {
+                        "device": "Atriclip",
+                        "_split_id": 4,
+                        "page": 1,
+                        "name": "eux211.pdf"
+                    }
+                },
+                {
+                    "answer": "long-term OAC (Class IIb)",
+                    "type": "extractive",
+                    "score": 0.5044412612915039,
+                    "context": "ed in patients with high stroke risk and contraindications for long-term OAC (Class IIb)35; however, interestingly both criteria were not met in PROTE",
+                    "offsets_in_document": [
+                        {
+                            "start": 877,
+                            "end": 902
+                        }
+                    ],
+                    "offsets_in_context": [
+                        {
+                            "start": 63,
+                            "end": 88
+                        }
+                    ],
+                    "document_id": "216626d4a38bac558964e2d37f43e396",
+                    "meta": {
+                        "device": "Atriclip",
+                        "_split_id": 36,
+                        "page": 8,
+                        "name": "eux211.pdf"
+                    }
+                },
+                {
+                    "answer": "absolute",
+                    "type": "extractive",
+                    "score": 0.4853655993938446,
+                    "context": "ients who would benefit from AC (CHA2DS2-VASc score of 2 or more) have absolute contraindications for AC. A higher percentage may have relative contra",
+                    "offsets_in_document": [
+                        {
+                            "start": 952,
+                            "end": 960
+                        }
+                    ],
+                    "offsets_in_context": [
+                        {
+                            "start": 71,
+                            "end": 79
+                        }
+                    ],
+                    "document_id": "fcf2422cd07fd14c1bdf12a5321c939b",
+                    "meta": {
+                        "device": "Atriclip",
+                        "_split_id": 4,
+                        "page": 1,
+                        "name": "jafib-11-02087.pdf"
+                    }
+                }
+            ]
+        },
+        {
+            "query": "Who should not use this device?",
+            "answers": [
+                {
+                    "answer": "",
+                    "type": "extractive",
+                    "score": 0.7919707681700695,
+                    "context": null,
+                    "offsets_in_document": [
+                        {
+                            "start": 0,
+                            "end": 0
+                        }
+                    ],
+                    "offsets_in_context": [
+                        {
+                            "start": 0,
+                            "end": 0
+                        }
+                    ],
+                    "document_id": null,
+                    "meta": {}
+                },
+                {
+                    "answer": "blood thinners",
+                    "type": "extractive",
+                    "score": 0.15296101570129395,
+                    "context": "e placed inside the heart this device does not require any need for blood thinners. However, Prof Weerasooriya will make the final recommendation depe",
+                    "offsets_in_document": [
+                        {
+                            "start": 694,
+                            "end": 708
+                        }
+                    ],
+                    "offsets_in_context": [
+                        {
+                            "start": 68,
+                            "end": 82
+                        }
+                    ],
+                    "document_id": "7087dab985136a73607709367040803c",
+                    "meta": {
+                        "device": "Atriclip",
+                        "_split_id": 6,
+                        "page": 6,
+                        "name": "Booklet-AtriClip.pdf"
+                    }
+                },
+                {
+                    "answer": "Patients",
+                    "type": "extractive",
+                    "score": 0.14052915573120117,
+                    "context": "your GP and also notify the cardiac surgeon. Taking showers with care. Patients must not go swimming or use a bathtub for 2-3 weeks until the wounds a",
+                    "offsets_in_document": [
+                        {
+                            "start": 617,
+                            "end": 625
+                        }
+                    ],
+                    "offsets_in_context": [
+                        {
+                            "start": 71,
+                            "end": 79
+                        }
+                    ],
+                    "document_id": "92731df0ea254f7d6ca51d47f12a5197",
+                    "meta": {
+                        "device": "Atriclip",
+                        "_split_id": 11,
+                        "page": 9,
+                        "name": "Booklet-AtriClip.pdf"
+                    }
+                },
+                {
+                    "answer": "Patients",
+                    "type": "extractive",
+                    "score": 0.14052915573120117,
+                    "context": "your GP and also notify the cardiac surgeon. Taking showers with care. Patients must not go swimming or use a bathtub for 2-3 weeks until the wounds a",
+                    "offsets_in_document": [
+                        {
+                            "start": 617,
+                            "end": 625
+                        }
+                    ],
+                    "offsets_in_context": [
+                        {
+                            "start": 71,
+                            "end": 79
+                        }
+                    ],
+                    "document_id": "26f0b30122b310c78040bcddcf629446",
+                    "meta": {
+                        "device": "Atriclip",
+                        "_split_id": 11,
+                        "name": "Booklet-AtriClip.pdf"
+                    }
+                },
+                {
+                    "answer": "patients without contraindications to anticoagulation",
+                    "type": "extractive",
+                    "score": 0.08124691992998123,
+                    "context": "se patients were referred for LAA exclusion. For patients without contraindications to anticoagulation, the decision is less straight forward. The Zur",
+                    "offsets_in_document": [
+                        {
+                            "start": 393,
+                            "end": 446
+                        }
+                    ],
+                    "offsets_in_context": [
+                        {
+                            "start": 49,
+                            "end": 102
+                        }
+                    ],
+                    "document_id": "78f396ea70b2a68970a07785f8f856b7",
+                    "meta": {
+                        "device": "Atriclip",
+                        "_split_id": 11,
+                        "page": 3,
                         "name": "jafib-11-02087.pdf"
                     }
                 }
@@ -2900,12 +3150,62 @@
             ]
         },
         {
-            "query": "What are contraindications for this device?Who should not use this device?",
+            "query": "What are contraindications for this device?",
             "answers": [
+                {
+                    "answer": "anticoagulant therapy",
+                    "type": "extractive",
+                    "score": 0.9055479764938354,
+                    "context": "nts who are at high risk of stroke and have contraindications to anticoagulant therapy that the newer procedures and techniques prove to be safe and e",
+                    "offsets_in_document": [
+                        {
+                            "start": 567,
+                            "end": 588
+                        }
+                    ],
+                    "offsets_in_context": [
+                        {
+                            "start": 65,
+                            "end": 86
+                        }
+                    ],
+                    "document_id": "d92d48d72e332306313a59fbd65246c6",
+                    "meta": {
+                        "device": "Lariat",
+                        "_split_id": 27,
+                        "page": 5,
+                        "name": "State_of_the_art_lariat.pdf"
+                    }
+                },
+                {
+                    "answer": "OAC therapy",
+                    "type": "extractive",
+                    "score": 0.7217686176300049,
+                    "context": "tion for preventing strokes in patients who have contraindications to OAC therapy. The main difficulty in performing the LARIAT procedure is the need ",
+                    "offsets_in_document": [
+                        {
+                            "start": 512,
+                            "end": 523
+                        }
+                    ],
+                    "offsets_in_context": [
+                        {
+                            "start": 70,
+                            "end": 81
+                        }
+                    ],
+                    "document_id": "45e9a4af9b0545dccd26e1a89eda6ab9",
+                    "meta": {
+                        "device": "Lariat",
+                        "_split_id": 19,
+                        "page": 4,
+                        "name": "Review_of_LARIAT_Suture_Delivery.pdf"
+                    }
+                },
                 {
                     "answer": "",
                     "type": "extractive",
-                    "score": 0.7990132456731138,
+                    "score": 0.7212554135949243,
                     "context": null,
                     "offsets_in_document": [
                         {
@@ -2923,59 +3223,9 @@
                     "meta": {}
                 },
                 {
-                    "answer": "it requires conitnuous INR monitoring and dose adjustments and because there can be a wide range of drug interactions",
-                    "type": "extractive",
-                    "score": 0.25275179743766785,
-                    "context": "patients because it requires conitnuous INR monitoring and dose adjustments and because there can be a wide range of drug interactions. Although newer",
-                    "offsets_in_document": [
-                        {
-                            "start": 260,
-                            "end": 377
-                        }
-                    ],
-                    "offsets_in_context": [
-                        {
-                            "start": 17,
-                            "end": 134
-                        }
-                    ],
-                    "document_id": "29c02f5524893f9ebc5af87a07576e03",
-                    "meta": {
-                        "device": "Lariat",
-                        "_split_id": 18,
-                        "page": 4,
-                        "name": "Review_of_LARIAT_Suture_Delivery.pdf"
-                    }
-                },
-                {
-                    "answer": "patients because it requires conitnuous INR monitoring and dose adjustments and because there can be a wide range of drug interactions",
-                    "type": "extractive",
-                    "score": 0.17746850848197937,
-                    "context": "convenient for patients because it requires conitnuous INR monitoring and dose adjustments and because there can be a wide range of drug interactions.",
-                    "offsets_in_document": [
-                        {
-                            "start": 1042,
-                            "end": 1176
-                        }
-                    ],
-                    "offsets_in_context": [
-                        {
-                            "start": 15,
-                            "end": 149
-                        }
-                    ],
-                    "document_id": "b0d59110a1f09c25747366c620c66e42",
-                    "meta": {
-                        "device": "Lariat",
-                        "_split_id": 17,
-                        "page": 4,
-                        "name": "Review_of_LARIAT_Suture_Delivery.pdf"
-                    }
-                },
-                {
                     "answer": "oral anticoagulant therapy",
                     "type": "extractive",
-                    "score": 0.13950738310813904,
+                    "score": 0.7204751968383789,
                     "context": "event AF-related stroke in patients with contraindications to oral anticoagulant therapy. J Teh Univ Heart Ctr 2015;10(2):69-73 This paper should be c",
                     "offsets_in_document": [
                         {
@@ -2998,28 +3248,153 @@
                     }
                 },
                 {
-                    "answer": "absolute contraindication to OAC therapy",
+                    "answer": "oral anticoagulant therapy",
                     "type": "extractive",
-                    "score": 0.0825921967625618,
-                    "context": "o be superior to other LAA closure techniques, it could be a desirable choice when there is an absolute contraindication to OAC therapy. References 1.",
+                    "score": 0.6898214817047119,
+                    "context": " the LAA closure with the LARIAT Suture Delivery Device to prevent AF-related stroke in patients with contraindications to oral anticoagulant therapy.",
                     "offsets_in_document": [
                         {
-                            "start": 1061,
-                            "end": 1101
+                            "start": 1221,
+                            "end": 1247
                         }
                     ],
                     "offsets_in_context": [
                         {
-                            "start": 95,
-                            "end": 135
+                            "start": 123,
+                            "end": 149
                         }
                     ],
-                    "document_id": "45e9a4af9b0545dccd26e1a89eda6ab9",
+                    "document_id": "710eb296b85c4bab7fc4140c7e13dc43",
                     "meta": {
                         "device": "Lariat",
-                        "_split_id": 19,
+                        "_split_id": 0,
+                        "page": 1,
+                        "name": "Review_of_LARIAT_Suture_Delivery.pdf"
+                    }
+                }
+            ]
+        },
+        {
+            "query": "Who should not use this device?",
+            "answers": [
+                {
+                    "answer": "",
+                    "type": "extractive",
+                    "score": 0.7976668044088469,
+                    "context": null,
+                    "offsets_in_document": [
+                        {
+                            "start": 0,
+                            "end": 0
+                        }
+                    ],
+                    "offsets_in_context": [
+                        {
+                            "start": 0,
+                            "end": 0
+                        }
+                    ],
+                    "document_id": null,
+                    "meta": {}
+                },
+                {
+                    "answer": "major cardiology professional organizations",
+                    "type": "extractive",
+                    "score": 0.10425382852554321,
+                    "context": "w studies. This technique is yet to be adapted by the major cardiology professional organizations into the clinical guidelines for the management of A",
+                    "offsets_in_document": [
+                        {
+                            "start": 1153,
+                            "end": 1196
+                        }
+                    ],
+                    "offsets_in_context": [
+                        {
+                            "start": 54,
+                            "end": 97
+                        }
+                    ],
+                    "document_id": "d92d48d72e332306313a59fbd65246c6",
+                    "meta": {
+                        "device": "Lariat",
+                        "_split_id": 27,
+                        "page": 5,
+                        "name": "State_of_the_art_lariat.pdf"
+                    }
+                },
+                {
+                    "answer": "patients",
+                    "type": "extractive",
+                    "score": 0.06922583281993866,
+                    "context": "the therapeutic range.18 Furthermore, Warfarin use is inconvenient for patients because it requires conitnuous INR monitoring and dose adjustments and",
+                    "offsets_in_document": [
+                        {
+                            "start": 243,
+                            "end": 251
+                        }
+                    ],
+                    "offsets_in_context": [
+                        {
+                            "start": 71,
+                            "end": 79
+                        }
+                    ],
+                    "document_id": "29c02f5524893f9ebc5af87a07576e03",
+                    "meta": {
+                        "device": "Lariat",
+                        "_split_id": 18,
                         "page": 4,
                         "name": "Review_of_LARIAT_Suture_Delivery.pdf"
+                    }
+                },
+                {
+                    "answer": "medical community",
+                    "type": "extractive",
+                    "score": 0.03443346917629242,
+                    "context": "d clinical trials examining the Lariat as a device for LAA exclusion should be obtained before its widespread use is adopted by the medical community.",
+                    "offsets_in_document": [
+                        {
+                            "start": 1380,
+                            "end": 1397
+                        }
+                    ],
+                    "offsets_in_context": [
+                        {
+                            "start": 132,
+                            "end": 149
+                        }
+                    ],
+                    "document_id": "a08210a119b3b2b2234e9adc1895337d",
+                    "meta": {
+                        "device": "Lariat",
+                        "_split_id": 28,
+                        "page": 5,
+                        "name": "Lariat1.pdf"
+                    }
+                },
+                {
+                    "answer": "FDA MAUDE database have not been independently verified, and the actual incidence of adverse events with the Lariat device in general practice cannot be calculated because the denominator of procedures performed remains unknown. We did not compare the Lariat device with other devices or procedures. We did not assess publication bias. We also did not control for operator-related or companion device–related factors. Because our analysis is based on published reports and case reports, we cannot say to what extent the Lariat device is being used for its cleared indications",
+                    "type": "extractive",
+                    "score": 0.013732509687542915,
+                    "context": " FDA MAUDE database have not been independently verified, and the actual incidence of adverse events with the Lariat device in general practice cannot be calculated because the denominator of procedures performed remains unknown. We did not compare the Lariat device with other devices or procedures. We did not assess publication bias. We also did not control for operator-related or companion device–related factors. Because our analysis is based on published reports and case reports, we cannot say to what extent the Lariat device is being used for its cleared indications",
+                    "offsets_in_document": [
+                        {
+                            "start": 391,
+                            "end": 966
+                        }
+                    ],
+                    "offsets_in_context": [
+                        {
+                            "start": 1,
+                            "end": 576
+                        }
+                    ],
+                    "document_id": "a08210a119b3b2b2234e9adc1895337d",
+                    "meta": {
+                        "device": "Lariat",
+                        "_split_id": 28,
+                        "page": 5,
+                        "name": "Lariat1.pdf"
                     }
                 }
             ]
