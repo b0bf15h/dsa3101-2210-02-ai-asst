@@ -1,0 +1,70 @@
+---
+title: "Question Answering Model"
+author: "Low Junwei - Hari Shiman R - Tyro Soh - B. Nishanth"
+format: 
+  revealjs: 
+    slide-number: c/t
+    width: 1600
+    height: 900
+    logo: "https://logos-download.com/wp-content/uploads/2016/12/National_University_of_Singapore_logo_NUS.png"
+    footer: "[AI-Assistant-Modelling]()"
+    css: ["theme/theme.css"]
+    theme: simple
+    echo: true
+    transition: slide
+    incremental: true
+    editor: visual
+jupyter: python3
+#title-slide-attributes: 
+  #data-background-image: 'https://si.wsj.net/public/resources/images/BT-AA536_WATCHM_FR_20150315203338.jpg'
+  #data-background-size: 100px
+  #data-background-position: top 60px left 100px
+---
+
+## Outline
+
+-   Project Review
+
+-   The Question Answering Model !
+
+-   Model Limitations and Improvements
+
+## What is the aim of our work?
+
+-   Smart tool to ease your workflow
+
+-   **Accurate** & **Efficient** retrieval of information scientific documents
+
+## How does the model work?
+
+-   Input a question and it provides answers
+-   Intelligently sourced from data we gathered
+
+## What data did we use?
+
+::::: {.columns}
+:::: {.column width="50%"} 
+::: {.fragment} 
+-  Research papers
+- Journals
+- Leaflets
+:::
+::::
+:::: {.column width="50%"}
+::: {.fragment}
+-   Watchman
+-   Atriclip
+-   Lariat
+:::
+::::
+:::::
+
+------------------------------------------------------------------------
+
+```{python}
+#import test_inference
+```
+
+## Any Limitations?
+
+-   Fixed Database
