@@ -52,15 +52,15 @@ for device in devices:
     output[device] = []
     for query in queries:
 
-    prediction = pipe.run(
-        query=query,
-        params={"Retriever": {"top_k": 10}, "Reader": {"top_k": 5}, "filters":{"device":device}}
-    )
+        prediction = pipe.run(
+            query=query,
+            params={"Retriever": {"top_k": 10}, "Reader": {"top_k": 5}, "filters":{"device":device}}
+        )
 
-    from haystack.utils import print_answers
+        from haystack.utils import print_answers
 
-    # Change `minimum` to `medium` or `all` to control the level of detail
-    output[device].append(print_answers(prediction, details="all"))
+        # Change `minimum` to `medium` or `all` to control the level of detail
+        output[device].append(print_answers(prediction, details="all"))
 
 
 import json
