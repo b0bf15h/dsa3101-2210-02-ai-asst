@@ -1,5 +1,5 @@
 queries = ["What is the intended use for this device?",
-"What are contraindications for this device?"
+"What are contraindications for this device?",
 "Who should not use this device?",
 "What are the dimensions of the device?",
 "What has this device been approved for?",
