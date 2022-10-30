@@ -61,13 +61,7 @@ for device in devices:
 
         from haystack.utils import print_answers
 
-        # Change `minimum` to `medium` or `all` to control the level of detail
-        prediction_output = {
-            "answer":prediction.answer,
-            "score":prediction.score,
-            "meta":prediction.meta
-        }
-        output[device].append(prediction_output)
+        output[device].append(map(prediction["answers"], lambda x:x.to_dict()))
 
 
 with open('outputs.json', 'w', encoding='utf-8') as f:
