@@ -47,7 +47,6 @@ pipe = ExtractiveQAPipeline(reader, retriever)
 
 
 import json
-from flask import jsonify
 
 output = dict()
 
@@ -63,8 +62,8 @@ for device in devices:
         from haystack.utils import print_answers
 
         # Change `minimum` to `medium` or `all` to control the level of detail
-        output[device].append(prediction)
+        output[device].append(json.loads(json.dumps(prediction.__dicts__)))
 
 
 with open('outputs.json', 'w', encoding='utf-8') as f:
-    json.dump(jsonify(output), f, ensure_ascii=False, indent=4)
+    json.dump(output, f, ensure_ascii=False, indent=4)
