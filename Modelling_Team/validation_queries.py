@@ -60,7 +60,7 @@ for device in devices:
         from haystack.utils import print_answers
 
         # Change `minimum` to `medium` or `all` to control the level of detail
-        output[device].append(prediction)
+        output[device].append(json.loads(json.dumps(prediction)))
 
 
 import json
