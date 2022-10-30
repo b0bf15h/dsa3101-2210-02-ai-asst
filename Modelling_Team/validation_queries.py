@@ -62,7 +62,7 @@ for device in devices:
         from haystack.utils import print_answers
 
         output[device].append(
-            {"query":query, "answers":list(map(lambda x:x.to_dict(), prediction["answers"]))
+            {"query":query, "answers":list(map(lambda x:x.to_dict(), prediction["answers"]))}
         )
 
 
