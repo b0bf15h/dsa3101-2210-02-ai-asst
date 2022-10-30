@@ -46,6 +46,8 @@ from haystack.pipelines import ExtractiveQAPipeline
 pipe = ExtractiveQAPipeline(reader, retriever)
 
 
+import json
+
 output = dict()
 
 for device in devices:
@@ -63,6 +65,5 @@ for device in devices:
         output[device].append(json.loads(json.dumps(prediction)))
 
 
-import json
 with open('outputs.json', 'w', encoding='utf-8') as f:
     json.dump(output, f, ensure_ascii=False, indent=4)
