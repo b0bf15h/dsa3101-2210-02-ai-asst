@@ -61,7 +61,7 @@ retriever = BM25Retriever(document_store=document_store)
 
 from haystack.nodes import FARMReader
 
-reader = FARMReader("deepset/bert-large-uncased-whole-word-masking-squad2", top_k=5, return_no_answer=True)
+reader = FARMReader("deepset/bert-large-uncased-whole-word-masking-squad2", top_k=5)
 
 
 from haystack.pipelines import ExtractiveQAPipeline
