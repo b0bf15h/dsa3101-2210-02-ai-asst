@@ -75,6 +75,10 @@ pipeline = ExtractiveQAPipeline(reader=reader, retriever=retriever)
 # We are also opting to filter out no_answer samples
 eval_labels = document_store.get_all_labels_aggregated(drop_negative_labels=True, drop_no_answers=True)
 
+eval_result = pipeline.eval(labels=eval_labels, params={"Retriever": {"top_k": 5}})
+metrics = eval_result.calculate_metrics()
+print(f'Reader - F1-Score: {metrics["Reader"]["f1"]}')
+print(f'Reader - Exact Match: {metrics["Reader"]["exact_match"]}')
 
 from haystack.schema import EvaluationResult, MultiLabel
 
