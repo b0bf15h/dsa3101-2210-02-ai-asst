@@ -13,3 +13,7 @@ sas score: 0.429
 deepset/roberta-large-squad2
 f1 score: 0.301
 sas score: 0.510
+
+deepset/roberta-base-squad2-covid
+f1 score: 0.332
+sas score: 0.499
