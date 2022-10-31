@@ -1,0 +1,15 @@
+deepset/bert-large-uncased-whole-word-masking-squad2
+f1 score: 0.315
+sas score: 0.441
+
+deepset/roberta-base-squad2
+f1 score: 0.296
+sas score: 0.422
+
+distilbert-base-cased-distilled-squad
+f1 score: 0.268
+sas score: 0.429
+
+deepset/roberta-large-squad2
+f1 score: 0.301
+sas score: 0.510
