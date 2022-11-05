@@ -7,6 +7,7 @@ WORKDIR /app
 COPY app.py app.py
 COPY document_store_setup.py document_store_setup.py
 COPY Datasets Datasets
+RUN mkdir /app/temp_data
 
 RUN pip3 install --upgrade pip
 RUN pip3 install flask

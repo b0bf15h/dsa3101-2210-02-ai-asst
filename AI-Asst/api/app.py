@@ -1,8 +1,9 @@
-from haystack.utils import launch_es
-
 import os
 from haystack.document_stores import ElasticsearchDocumentStore
+from haystack.utils import convert_files_to_docs
+from haystack.nodes import PreProcessor
 from flask import Flask, request, jsonify, send_file, render_template
+from werkzeug.utils import secure_filename
 
 import time
 time.sleep(30)
@@ -43,6 +44,40 @@ def make_prediction():
         params={"Retriever": {"top_k": 10}, "Reader": {"top_k": 5}, "filters":{"device":[device]}}
     )
     return jsonify(prediction)
+
+
+@app.route("/upload", methods=["POST"])
+def upload():
+    file = request.files["file"]
+    filename = secure_filename(file.filename)
+    doc_dir = "temp_data"
+    file.save(os.path.join(doc_dir, filename))
+    device = request.form["device"]
+
+    all_docs = convert_files_to_docs(dir_path=doc_dir, clean_func = lambda x:x.replace("-\n", "").replace("\n"," "), split_paragraphs=True)
+
+    for doc in all_docs:
+        doc.meta['device'] = device
+
+    preprocessor = PreProcessor(
+        clean_empty_lines=True,
+        clean_whitespace=True,
+        clean_header_footer=False,
+        split_by="word",
+        split_length=200,
+        split_overlap=30,
+        split_respect_sentence_boundary=True,
+        add_page_number=True
+    )
+    docs = preprocessor.process(all_docs)
+
+    document_store.write_documents(docs)
+    os.remove(os.path.join(doc_dir, filename))
+
+    return "Successfully Uploaded"
+
+
+
 
 
 
