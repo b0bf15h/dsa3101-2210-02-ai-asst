@@ -77,7 +77,7 @@ dropdownMenuCustom <- function (..., type = c("messages", "notifications", "task
     )
   )
 }
-hotkeys <- c("enter", "shift")
+
 
 ui <- dashboardPage(
   
