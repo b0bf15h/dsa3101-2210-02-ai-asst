@@ -140,13 +140,13 @@ ui <- dashboardPage(
     
     tabItem(tabName = "uploadnew",
             fluidRow(
-              column(6, "Upload a pdf file containing information about your medical device:",
+              column(10, tags$h1(strong("Upload a PDF file containing information about your medical device"),style = "font-size:20px"),
                      fluidRow(
-                       column(5, textInput("device_in_file",
+                       column(10, textInput("device_in_file",
                                            "Please input the name of your product",
                                            placeholder = "Name of your product")),
-                       column(8, fileInput("file1",
-                                           label="", 
+                       column(10, fileInput("file1",
+                                           label="Select a file", 
                                            accept=".pdf")),
                        column(10,actionButton("submit",
                                               label = "Submit")))),
@@ -164,12 +164,12 @@ server <- function(input,output,session){
   
   output$menu <- renderMenu({ 
     sidebarMenu(id = "sidebarmenu",
-                menuItem("About Product",
+                menuItem("Speak to Jarvik",
                          tabName = "aboutproduct",
-                         icon = NULL),
+                         icon = icon("comment")),
                 menuItem("Upload New File",
                          tabName = "uploadnew",
-                         icon = NULL)
+                         icon = icon("upload"))
 
                 )
   })
