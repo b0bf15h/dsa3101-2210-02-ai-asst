@@ -20,6 +20,8 @@ library(shinyBS)
 source("chatbot.R",local=T)
 productlist <- c('Watchman', 'Atriclip', 'Lariat')
 
+# ---------------------------- HELPER FUNCTIONS (temp) ----------------------------
+
 jscode <- '
 $(function() {
   var $els = $("[data-proxy-click]");
@@ -123,7 +125,7 @@ ui <- dashboardPage(
               hidden(wellPanel(
                 id = 'chat',
                 style = "bottom:70px",
-                tags$div(id = 'placeholder', style = "max-height: 200px; overflow: auto"),
+                tags$div(id = 'placeholder', style = "max-height: 800px; overflow: auto"),
                 hidden(tags$div(
                   id = "else",
                   hidden(
@@ -153,7 +155,9 @@ ui <- dashboardPage(
                                            placeholder = "Name of your product")),
                        column(8, fileInput("file1",
                                            label="", 
-                                           accept=".pdf")))),
+                                           accept=".pdf")),
+                       column(10,actionButton("submit",
+                                              label = "Submit")))),
             )
     )
   ),
@@ -183,11 +187,11 @@ server <- function(input,output,session){
   
 # ---------------------------- UPLOAD FILE ----------------------------
   
-  observeEvent(input$device_in_file, {
-    productlist <- c(productlist,str_split(input$device_in_file,',')[[1]])
+  observeEvent(input$submit, {
+    productlist <<- c(productlist, str_split(input$device_in_file, ',')[[1]])
     updateSelectInput(session,"ChooseProd",choices= productlist)
-    
   })
+  
   
 # ---------------------------- JARVIK CHATBOT ----------------------------
   inserted <- c()
