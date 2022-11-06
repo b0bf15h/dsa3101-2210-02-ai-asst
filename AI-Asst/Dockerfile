@@ -12,7 +12,8 @@ RUN echo "local(options(shiny.port = 3838, shiny.host = '0.0.0.0'))" > /usr/lib/
 RUN addgroup --system app \
     && adduser --system --ingroup app app
 WORKDIR /home/app
-COPY app .
+COPY app.R .
+COPY chatbot.R
 RUN chown app:app -R /home/app
 USER app
 EXPOSE 3838
