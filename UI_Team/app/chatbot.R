@@ -1,4 +1,5 @@
 library(jsonlite)
+library(httr)
 
 
 ######## answer1 #########
@@ -8,7 +9,7 @@ chatbot <- function(file="answers1.js", find=1) {
   
   answers <- docs['answers'][[1]]
   if (length(answers) < find){
-    output <- "-1" #"Sorry, no more infomation available.  Please search for another device!"
+    output <- "-1" #"Sorry, no more information available.  Please search for another device!"
   }else{
     output <- answers %>% as_tibble() %>% 
       arrange(desc(score)) %>% slice(find) %>% 
@@ -19,7 +20,11 @@ chatbot <- function(file="answers1.js", find=1) {
 
 build_chatbot <- function(device, ques, find=1){
   # connect to model file and generate json object
-  file = "answers1.js"
+  url = "http://localhost:5000/prediction"
+  resp<-GET(url, make_prediction(question = ques, device = device))
+  # t1<-content(resp, type="application/json")
+  # file = "answers1.js"
+  file = http_type(resp)
   output <- chatbot(file, find)
 }
 
