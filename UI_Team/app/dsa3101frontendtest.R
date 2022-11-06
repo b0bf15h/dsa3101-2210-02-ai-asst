@@ -1,16 +1,16 @@
 library(shiny)
-library(ggplot2)
+
 library(dplyr)
 library(tidyr)
 library(readr)
 library(purrr)
-library(tibble)
+
 library(stringr)
 library(forcats)
-library(plotly)
+
 library(httr)
 library(jsonlite)
-library(RColorBrewer)
+
 library(bslib)
 library(shinyjs)
 library(DT)
@@ -19,6 +19,24 @@ library(shinyBS)
 
 source("chatbot.R",local=T)
 productlist <- c('Watchman', 'Atriclip', 'Lariat')
+
+jscode <- '
+$(function() {
+  var $els = $("[data-proxy-click]");
+  $.each(
+    $els,
+    function(idx, el) {
+      var $el = $(el);
+      var $proxy = $("#" + $el.data("proxyClick"));
+      $el.keydown(function (e) {
+        if (e.keyCode == 13) {
+          $proxy.click();
+        }
+      });
+    }
+  );
+});
+'
 
 customSentence <- function(numItems,type) {
   paste("Feedback & suggestions")
@@ -65,11 +83,11 @@ dropdownMenuCustom <- function (..., type = c("messages", "notifications", "task
     )
   )
 }
+hotkeys <- c("enter", "shift")
 
 ui <- dashboardPage(
   
   # ---------------------------- HEADER ----------------------------
-    
   dashboardHeader(
     titleWidth = 550,
     title = "AI Assistant for Medical Sales Representative",
@@ -95,7 +113,10 @@ ui <- dashboardPage(
   
   # ---------------------------- BODY ----------------------------
   
-  dashboardBody(tabItems(
+  dashboardBody(
+    tags$head(tags$script(HTML(jscode))),
+    `data-proxy-click` = "insertBtn",
+    tabItems(
     
     tabItem(tabName = "aboutproduct",
             fluidRow(
@@ -163,9 +184,9 @@ server <- function(input,output,session){
 # ---------------------------- UPLOAD FILE ----------------------------
   
   observeEvent(input$device_in_file, {
-    new_productlist = c(productlist,str_split(input$device_in_file,',')[[1]])
-    updateSelectInput(session,"ChooseProd",choices= new_productlist)
-    productlist = new_productlist
+    productlist <- c(productlist,str_split(input$device_in_file,',')[[1]])
+    updateSelectInput(session,"ChooseProd",choices= productlist)
+    
   })
   
 # ---------------------------- JARVIK CHATBOT ----------------------------
