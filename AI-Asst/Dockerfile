@@ -13,7 +13,7 @@ RUN addgroup --system app \
     && adduser --system --ingroup app app
 WORKDIR /home/app
 COPY app.R .
-COPY chatbot.R
+COPY chatbot.R .
 RUN chown app:app -R /home/app
 USER app
 EXPOSE 3838
