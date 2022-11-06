@@ -30,6 +30,9 @@ ui <- dashboardPage(
   # ---------------------------- SIDEBAR ----------------------------
   
   dashboardSidebar(
+    selectInput("ChooseProd",
+                label = "Learn More About",
+                choices = productlist),
     sidebarMenuOutput("menu")
   ),
   
@@ -38,25 +41,32 @@ ui <- dashboardPage(
   dashboardBody(tabItems(
     
     tabItem(tabName = "aboutproduct",
-            fluidRow(div(
-              div(style = "display:inline-block;",
-                  actionButton(inputId = "description",
-                               label = "Description",
-                               icon = NULL,
-                               width = "300px")),
-              div(style = "display:inline-block;",
-                  actionButton(inputId = "why",
-                               label = "Why choose me",
-                               icon = NULL,
-                               width = "300px")),
-              div(style = "display:inline-block;",
-                  actionButton(inputId = "how",
-                               label = "Surgical Procedure",
-                               icon = NULL,
-                               width = "300px"))
-            )
-            )
-    ),
+            fluidRow(hidden(
+              wellPanel(
+                id = 'chat',
+                style = "bottom:70px",
+                tags$div(id = 'placeholder', style = "max-height: 200px; overflow: auto"),
+                hidden(tags$div(
+                  id = "else",
+                  hidden(
+                    actionButton("elseBtn", "Show me something else", class = "btn btn-sm")
+                  ),
+                  actionButton("switchBtn", "Search for another device",  class =
+                                 "btn btn-sm")
+                )),
+                div(
+                  id = 'txt_label',
+                  textInput('txt', h4("How can I help you?") , placeholder = "Enter your questions"),
+                  actionButton('insertBtn', 'Insert'),
+                  actionButton('removeBtn', 'Remove'),
+                  actionButton('clearBtn', 'Clear')
+                ),
+                tags$br()
+              )
+            ),
+            offset = 9)
+    ), 
+    
     tabItem(tabName = "uploadnew",
             fluidRow(
               column(6, "Upload a pdf file containing information about your medical device:",
@@ -84,9 +94,7 @@ server <- function(input,output,session){
     sidebarMenu(id = "sidebarmenu",
                 menuItem("About Product",
                          tabName = "aboutproduct",
-                         icon = NULL
-                         menuSubItem("Choose Product",
-                                      )),
+                         icon = NULL),
                 menuItem("Upload New File",
                          tabName = "uploadnew",
                          icon = NULL)
@@ -94,28 +102,149 @@ server <- function(input,output,session){
                 )
   })
   
+  
+  
   observeEvent(input$sidebarmenu, {
     output$text <- renderText({
       if(input$sidebarmenu == "aboutproduct"){
-        "- DESCRIPTION OF PRODUCT -"
+        "- SPEAK TO JARVIK -"
       }else if(input$sidebarmenu == "uploadnew"){
         "- UPLOAD NEW FILE HERE -"
       }
     })
   })
   
-  observeEvent(input$description,{
-    output$text <- renderText("- DESCRIPTION OF PRODUCT -")
+# ---------------------------- JARVIK CHATBOT ----------------------------
+  inserted <- c()
+  device <- c()
+  ques <- c()
+  btn <- c()
+  
+  
+  observeEvent(input$insertBtn, {
+    if (length(btn)==0){btn <<- input$insertBtn}
+    else btn <<- btn+1
+    id <- paste0('txt', btn)
+    text <- input$txt
+    insertUI(
+      selector = '#placeholder',
+      ui = tags$div(
+        tags$b(paste('You: ', text)),
+        if(text!=""){
+          # check whether previous device inserted
+          if (length(device) == 0) {found <- check_device(text, productlist)}
+          else {found <- -1} # Have previous device
+          
+          if(found==0){
+            # Not valid device
+            tags$div(tags$p(renderText({paste("Jarvik: ", "Sorry I do not have infomation for this device!")})),
+                     tags$p(renderText({paste("Jarvik: Please enter another device!")})),
+                     tags$hr())
+          }else if(found != -1){
+            # A valid device found 
+            device <<- c(text, device)
+            tags$p(renderText({paste("Jarvik: ", "Great! What is your question?")}))
+          }else{
+            # Text is the question (after searching for a valid device)
+            ques <<- c(text, ques)
+            answer <- build_chatbot(device, ques, find=1)
+            tags$p(renderText({paste("Jarvik:[", device[length(device)], "]", answer)}))
+          }
+        }else{
+          tags$p(renderText({paste("Jarvik: ", "I am not sure I understand you fully")}))
+        },
+        id = id
+      )
+    )
+    if(text!="" && found == -1){
+      show("else")
+      show("elseBtn")
+    }else{hide("else")}
+    
+    updateTextInput(session, "txt",  value= "")
+    inserted <<- c(id, inserted)
   })
   
-  observeEvent(input$why,{
-    output$text <- renderText("- WHY CHOOSE PRODUCT? -")
+  observeEvent(input$elseBtn,{
+    btn <<- btn + 1
+    id <- paste0('txt', btn)
+    answer <- build_chatbot(device, ques[1], input$elseBtn+1)
+    insertUI(
+      selector = '#placeholder',
+      ## wrap element in a div with id for ease of removal
+      ui = tags$div(
+        tags$b(paste('You: ','Show me something else about "', ques[1], '"')),
+        if (answer != -1){tags$p(renderText({paste("Jarvik:[", device[length(device)], "]", answer)}))}
+        else {tags$div(tags$p(renderText({paste("Jarvik:[", device[length(device)], "]", 
+                                                "Sorry, I cannot come up with other answers.")})),
+                       tags$p(renderText({paste("Jarvik:[", device[length(device)], "]", 
+                                                "Please ask a different question!")})) 
+        )},
+        id = id
+      )
+    )
+    if (answer == -1){
+      hide("elseBtn")
+      #updateActionButton(session, "elseBtn", label = "Another Question")
+      ques <<- c()
+    }else{ques <<- c(ques[1], ques)}
+    inserted <<- c(id, inserted)
   })
   
-  observeEvent(input$how,{
-    output$text <- renderText("- SURGICAL PROCEDURES -")
+  observeEvent(input$switchBtn,{
+    btn <<- btn + 1
+    id <- paste0('txt', btn)
+    insertUI(
+      selector = '#placeholder',
+      ui = tags$div(
+        tags$hr(),
+        tags$b(renderText({paste("Jarvik: ","What device are you looking for?")})),
+        tags$br(),
+        device <<- c(),
+        ques <<- c(),
+        id = id
+      )
+    )
+    hide("else")
+    inserted <<- c(id, inserted)
   })
   
+  observeEvent(input$removeBtn, {
+    btn <<- btn + 1
+    id <- paste0('txt', btn)
+    removeUI(
+      selector = paste0('#', inserted[1]),
+    )
+    hide("else")
+    inserted <<- inserted[-1]
+    
+    insertUI(
+      selector = paste0('#', inserted[1]),
+      ui = tags$div(
+        if (length(ques) == 0){
+          device <<- c()
+          tags$b(renderText({paste("Jarvik: ","Please enter the device you want to search for")}))
+          tags$br()
+        }else{
+          ques <<- ques[-1]
+          tags$b(renderText({paste('Jarvik: ', 'You can also ask questions about "', 
+                                   device[length(device)], '"')}))
+          tags$br()
+        }
+      )
+    )
+  })
+  
+  observeEvent(input$clearBtn, {
+    removeUI(
+      selector = paste0('#', inserted),
+      multiple = T
+    )
+    hide("else")
+    inserted <<- c()
+    device <<- c()
+    ques <<- c()
+  })
 }
 
 # ---------------------------- RUN APP ----------------------------
