@@ -1,148 +1,195 @@
 library(shiny)
-library(ggplot2)
-library(dplyr)
-library(tidyr)
-library(readr)
 library(purrr)
-library(tibble)
 library(stringr)
-library(forcats)
-library(plotly)
 library(httr)
 library(jsonlite)
-library(RColorBrewer)
 library(bslib)
-
 library(shinyjs)
 library(DT)
+library(shinydashboard)
+library(shinyBS)
 
-
-flask_url <- "http://flask:5000/"
-
-
-#Chatbot function
 source("chatbot.R",local=T)
 productlist <- c('Watchman', 'Atriclip', 'Lariat')
 
-ui <- fluidPage(
-  useShinyjs(),
-  theme = bs_theme(version = 4, booswatch = "minty"),
-  #Application title
-  titlePanel("AI Assistant for Medical Sales Representative"),
-  #Sidebar for information of product
-  sidebarLayout(
-    sidebarPanel(
-      tags$br(selectInput("ChooseProd",label = "Learn More About", choices = productlist)),
-      tags$br(actionButton(inputId="what.button",label="What?",icon=NULL)),
-      tags$br(),
-      tags$br(actionButton(inputId="why.button",label="Why?",icon=NULL)),
-      tags$br(),
-      tags$br(actionButton(inputId="how.button",label="How?",icon=NULL)),
-      tags$br(),
-      tags$br(actionButton(inputId="stats.button",label="Statistics",icon=NULL)),
-      width = 2
+# ---------------------------- HELPER FUNCTIONS (temp) ----------------------------
+
+jscode <- '
+$(function() {
+  var $els = $("[data-proxy-click]");
+  $.each(
+    $els,
+    function(idx, el) {
+      var $el = $(el);
+      var $proxy = $("#" + $el.data("proxyClick"));
+      $el.keydown(function (e) {
+        if (e.keyCode == 13) {
+          $proxy.click();
+        }
+      });
+    }
+  );
+});
+'
+
+customSentence <- function(numItems,type) {
+  paste("Feedback & suggestions")
+}
+
+dropdownMenuCustom <- function (..., type = c("messages", "notifications", "tasks"), 
+                                    badgeStatus = "primary", icon = NULL, .list = NULL, customSentence = customSentence) 
+{
+  type <- match.arg(type)
+  if (!is.null(badgeStatus)) shinydashboard:::validateStatus(badgeStatus)
+  items <- c(list(...), .list)
+  lapply(items, shinydashboard:::tagAssert, type = "li")
+  dropdownClass <- paste0("dropdown ", type, "-menu")
+  if (is.null(icon)) {
+    icon <- switch(type, messages = shiny::icon("envelope"), 
+                   notifications = shiny::icon("warning"), tasks = shiny::icon("tasks"))
+  }
+  numItems <- length(items)
+  if (is.null(badgeStatus)) {
+    badge <- NULL
+  }
+  else {
+    badge <- tags$span(class = paste0("label label-", badgeStatus), 
+                       numItems)
+  }
+  tags$li(
+    class = dropdownClass, 
+    a(
+      href = "#", 
+      class = "dropdown-toggle", 
+      `data-toggle` = "dropdown", 
+      icon, 
+      badge
+    ), 
+    tags$ul(
+      class = "dropdown-menu", 
+      tags$li(
+        class = "header", 
+        customSentence(numItems, type)
+      ), 
+      tags$li(
+        tags$ul(class = "menu", items)
+      )
+    )
+  )
+}
+hotkeys <- c("enter", "shift")
+
+ui <- dashboardPage(
+  
+  # ---------------------------- HEADER ----------------------------
+  dashboardHeader(
+    titleWidth = 550,
+    title = "AI Assistant for Medical Sales Representative",
+    dropdownMenuCustom(type = 'message',
+                       customSentence = customSentence,
+                       messageItem(
+                         from = "bleejins@gmail.com", 
+                         message = "",
+                         icon = icon("envelope"),
+                         href = "mailto:bleejins@gmail.com"
+                       ),
+                       icon = icon("comment"))
     ),
+  
+  # ---------------------------- SIDEBAR ----------------------------
+  
+  dashboardSidebar(
+    selectInput("ChooseProd",
+                label = "Learn More About",
+                choices = productlist),
+    sidebarMenuOutput("menu")
+  ),
+  
+  # ---------------------------- BODY ----------------------------
+  
+  dashboardBody(
+    tags$head(tags$script(HTML(jscode))),
+    `data-proxy-click` = "insertBtn",
+    tabItems(
     
-    mainPanel(
-      tabsetPanel(
-        id="inTabset", type = 'hidden',
-        tabPanel("Description",
-                 uiOutput("help_text"),
-                 plotOutput("distPlot")),
-        
-        tabPanel("Benefits",
-                 tableOutput("newTable"))
-      ),
+    tabItem(tabName = "aboutproduct",
+            fluidRow(
+              hidden(wellPanel(
+                id = 'chat',
+                style = "bottom:70px",
+                tags$div(id = 'placeholder', style = "max-height: 800px; overflow: auto"),
+                hidden(tags$div(
+                  id = "else",
+                  hidden(
+                    actionButton("elseBtn", "Show me something else", class = "btn btn-sm")
+                  ),
+                  actionButton("switchBtn", "Search for another device",  class =
+                                 "btn btn-sm")
+                )),
+                div(
+                  id = 'txt_label',
+                  textInput('txt', h4("How can I help you?") , placeholder = "Enter your questions"),
+                  actionButton('insertBtn', 'Insert'),
+                  actionButton('removeBtn', 'Remove'),
+                  actionButton('clearBtn', 'Clear')
+                ),
+                tags$br()
+              )),
+              offset = 9)
+    ), 
+    
+    tabItem(tabName = "uploadnew",
+            fluidRow(
+              column(6, "Upload a pdf file containing information about your medical device:",
+                     fluidRow(
+                       column(5, textInput("device_in_file",
+                                           "Please input the name of your product",
+                                           placeholder = "Name of your product")),
+                       column(8, fileInput("file1",
+                                           label="", 
+                                           accept=".pdf")),
+                       column(10,actionButton("submit",
+                                              label = "Submit")))),
+            )
     )
   ),
-  #Take file input to process new documents, users should specify the device that they're looking for
-  fluidRow(
-    column(6, "Upload a pdf file containing information about your medical device:",
-           fluidRow(column(5, fileInput("file1",label="", accept=".pdf")))),
-    column(3, textInput("device_in_file", "Find out more about other devices! If there are multiple devices, please separate by comma without spaces.", placeholder = "E.g. Device A,Device B"))
-  ),
-  
-  hr(),
-  
-  fluidRow(
-  column(3, style = "position: absolute; bottom: 5px; left: 0 ",
-         div(actionButton("JarvikBtn", "Jarvik", style="font-size:30px",icon('question-sign',lib = "glyphicon")), 
-             style="right:10px; bottom: 5px; position: absolute"),
-    
-    hidden(wellPanel(id = 'chat', style="bottom:70px",
-    tags$div(id = 'placeholder', style = "max-height: 200px; overflow: auto"),
-    hidden(tags$div(id = "else", hidden(actionButton("elseBtn","Show me something else", class="btn btn-sm")),
-                    actionButton("switchBtn","Search for another device",  class="btn btn-sm"))),
-    div(id = 'txt_label', textInput('txt', h4("How can I help you?") , placeholder = "Enter your questions"),
-    actionButton('insertBtn', 'Insert'),
-    actionButton('removeBtn', 'Remove'),
-    actionButton('clearBtn', 'Clear')),
-    tags$br()
-    )),
-  offset = 9
-  )
+
   )
 )
+          
+
+# ---------------------------- FUNCTIONS ----------------------------
 
 server <- function(input,output,session){
-  bs_themer()
-  #adds input device names to select input
-  observeEvent(input$device_in_file, {
-    new_productlist = c(productlist,str_split(input$device_in_file,',')[[1]])
-    updateSelectInput(session,"ChooseProd",choices= new_productlist)
-    productlist = new_productlist
+  
+  output$menu <- renderMenu({ 
+    sidebarMenu(id = "sidebarmenu",
+                menuItem("About Product",
+                         tabName = "aboutproduct",
+                         icon = NULL),
+                menuItem("Upload New File",
+                         tabName = "uploadnew",
+                         icon = NULL)
+
+                )
+  })
+
+  
+  
+  
+# ---------------------------- UPLOAD FILE ----------------------------
+  
+  observeEvent(input$submit, {
+    productlist <<- c(productlist, str_split(input$device_in_file, ',')[[1]])
+    updateSelectInput(session,"ChooseProd",choices= productlist)
   })
   
-  observeEvent(input$what.button, {
-    updateTabsetPanel(session, "inTabset",
-                      selected = "Description")
-  })
   
-  #action button for "Why?" -> Benefits Tab  
-  observeEvent(input$why.button, {
-    updateTabsetPanel(session, "inTabset",
-                      selected = "Benefits")
-  })
-  
-  
-  output$help_text <- renderUI({
-    HTML("<b> Click 'Show plot' to show the plot. </b>")
-  })
-  
-  #output Description for Watchman
-  output$distPlot <- renderPlot({
-    plot_data()
-  })
-  
-  #Output Benefits for Watchman
-  output$newTable <- renderTable({
-    data()
-  })
-  
-  # Jarvik Chatbot
+# ---------------------------- JARVIK CHATBOT ----------------------------
   inserted <- c()
   device <- c()
   ques <- c()
   btn <- c()
-  
-  observeEvent(input$JarvikBtn, {
-    toggle("chat")
-    if(input$JarvikBtn%%2){
-      if (length(btn)==0){btn <<- input$JarvikBtn}
-      else btn <<- btn+1
-      id <- paste0('txt', btn)
-      insertUI(
-        selector = '#placeholder',
-        ui = tags$div(
-            tags$hr(),
-            tags$p(renderText({paste("Jarvik: ","Hello, I am Jarvik! Your AI Assistant!")})),
-            tags$p(renderText({paste("Jarvik: ","What device are you looking for?")})),
-            id = id
-            )
-      )
-      inserted <<- c(id, inserted)
-      }
-  })
   
   
   observeEvent(input$insertBtn, {
@@ -155,25 +202,25 @@ server <- function(input,output,session){
       ui = tags$div(
         tags$b(paste('You: ', text)),
         if(text!=""){
-        # check whether previous device inserted
-        if (length(device) == 0) {found <- check_device(text, productlist)}
-        else {found <- -1} # Have previous device
-        
-        if(found==0){
-          # Not valid device
-          tags$div(tags$p(renderText({paste("Jarvik: ", "Sorry I do not have infomation for this device!")})),
-                    tags$p(renderText({paste("Jarvik: Please enter another device!")})),
-                            tags$hr())
+          # check whether previous device inserted
+          if (length(device) == 0) {found <- check_device(text, productlist)}
+          else {found <- -1} # Have previous device
+          
+          if(found==0){
+            # Not valid device
+            tags$div(tags$p(renderText({paste("Jarvik: ", "Sorry I do not have infomation for this device!")})),
+                     tags$p(renderText({paste("Jarvik: Please enter another device!")})),
+                     tags$hr())
           }else if(found != -1){
             # A valid device found 
             device <<- c(text, device)
             tags$p(renderText({paste("Jarvik: ", "Great! What is your question?")}))
-        }else{
-          # Text is the question (after searching for a valid device)
-          ques <<- c(text, ques)
-          answer <- build_chatbot(device, ques, find=1)
-          tags$p(renderText({paste("Jarvik:[", device[length(device)], "]", answer)}))
-        }
+          }else{
+            # Text is the question (after searching for a valid device)
+            ques <<- c(text, ques)
+            answer <- build_chatbot(device, ques, find=1)
+            tags$p(renderText({paste("Jarvik:[", device[length(device)], "]", answer)}))
+          }
         }else{
           tags$p(renderText({paste("Jarvik: ", "I am not sure I understand you fully")}))
         },
@@ -200,10 +247,10 @@ server <- function(input,output,session){
         tags$b(paste('You: ','Show me something else about "', ques[1], '"')),
         if (answer != -1){tags$p(renderText({paste("Jarvik:[", device[length(device)], "]", answer)}))}
         else {tags$div(tags$p(renderText({paste("Jarvik:[", device[length(device)], "]", 
-                                       "Sorry, I cannot come up with other answers.")})),
-                    tags$p(renderText({paste("Jarvik:[", device[length(device)], "]", 
-                                                       "Please ask a different question!")})) 
-                      )},
+                                                "Sorry, I cannot come up with other answers.")})),
+                       tags$p(renderText({paste("Jarvik:[", device[length(device)], "]", 
+                                                "Please ask a different question!")})) 
+        )},
         id = id
       )
     )
@@ -269,8 +316,9 @@ server <- function(input,output,session){
     device <<- c()
     ques <<- c()
   })
-  
 }
 
-#Run the application
-shinyApp(ui = ui, server = server)
+# ---------------------------- RUN APP ----------------------------
+
+shinyApp(ui, server)
+
