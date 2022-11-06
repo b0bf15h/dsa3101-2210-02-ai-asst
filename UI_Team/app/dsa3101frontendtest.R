@@ -20,12 +20,69 @@ library(shinyBS)
 source("chatbot.R",local=T)
 productlist <- c('Watchman', 'Atriclip', 'Lariat')
 
+customSentence <- function(numItems,type) {
+  paste("Feedback & suggestions")
+}
+
+dropdownMenuCustom <- function (..., type = c("messages", "notifications", "tasks"), 
+                                    badgeStatus = "primary", icon = NULL, .list = NULL, customSentence = customSentence) 
+{
+  type <- match.arg(type)
+  if (!is.null(badgeStatus)) shinydashboard:::validateStatus(badgeStatus)
+  items <- c(list(...), .list)
+  lapply(items, shinydashboard:::tagAssert, type = "li")
+  dropdownClass <- paste0("dropdown ", type, "-menu")
+  if (is.null(icon)) {
+    icon <- switch(type, messages = shiny::icon("envelope"), 
+                   notifications = shiny::icon("warning"), tasks = shiny::icon("tasks"))
+  }
+  numItems <- length(items)
+  if (is.null(badgeStatus)) {
+    badge <- NULL
+  }
+  else {
+    badge <- tags$span(class = paste0("label label-", badgeStatus), 
+                       numItems)
+  }
+  tags$li(
+    class = dropdownClass, 
+    a(
+      href = "#", 
+      class = "dropdown-toggle", 
+      `data-toggle` = "dropdown", 
+      icon, 
+      badge
+    ), 
+    tags$ul(
+      class = "dropdown-menu", 
+      tags$li(
+        class = "header", 
+        customSentence(numItems, type)
+      ), 
+      tags$li(
+        tags$ul(class = "menu", items)
+      )
+    )
+  )
+}
+
 ui <- dashboardPage(
   
   # ---------------------------- HEADER ----------------------------
     
   dashboardHeader(
-    title = "AI Assistant for Medical Sales Representative"),
+    titleWidth = 550,
+    title = "AI Assistant for Medical Sales Representative",
+    dropdownMenuCustom(type = 'message',
+                       customSentence = customSentence,
+                       messageItem(
+                         from = "bleejins@gmail.com", 
+                         message = "",
+                         icon = icon("envelope"),
+                         href = "mailto:bleejins@gmail.com"
+                       ),
+                       icon = icon("comment"))
+    ),
   
   # ---------------------------- SIDEBAR ----------------------------
   
@@ -41,8 +98,8 @@ ui <- dashboardPage(
   dashboardBody(tabItems(
     
     tabItem(tabName = "aboutproduct",
-            fluidRow(hidden(
-              wellPanel(
+            fluidRow(
+              hidden(wellPanel(
                 id = 'chat',
                 style = "bottom:70px",
                 tags$div(id = 'placeholder', style = "max-height: 200px; overflow: auto"),
@@ -62,26 +119,24 @@ ui <- dashboardPage(
                   actionButton('clearBtn', 'Clear')
                 ),
                 tags$br()
-              )
-            ),
-            offset = 9)
+              )),
+              offset = 9)
     ), 
     
     tabItem(tabName = "uploadnew",
             fluidRow(
               column(6, "Upload a pdf file containing information about your medical device:",
                      fluidRow(
-                       column(5, fileInput("file1",
+                       column(5, textInput("device_in_file",
+                                           "Please input the name of your product",
+                                           placeholder = "Name of your product")),
+                       column(8, fileInput("file1",
                                            label="", 
                                            accept=".pdf")))),
-              column(3, 
-                     textInput("device_in_file", 
-                               "Find out more about other devices! If there are multiple devices, please separate by comma without spaces.", 
-                               placeholder = "E.g. Device A,Device B"))
             )
     )
   ),
-  textOutput("text")
+
   )
 )
           
@@ -101,17 +156,16 @@ server <- function(input,output,session){
 
                 )
   })
+
   
   
   
-  observeEvent(input$sidebarmenu, {
-    output$text <- renderText({
-      if(input$sidebarmenu == "aboutproduct"){
-        "- SPEAK TO JARVIK -"
-      }else if(input$sidebarmenu == "uploadnew"){
-        "- UPLOAD NEW FILE HERE -"
-      }
-    })
+# ---------------------------- UPLOAD FILE ----------------------------
+  
+  observeEvent(input$device_in_file, {
+    new_productlist = c(productlist,str_split(input$device_in_file,',')[[1]])
+    updateSelectInput(session,"ChooseProd",choices= new_productlist)
+    productlist = new_productlist
   })
   
 # ---------------------------- JARVIK CHATBOT ----------------------------
