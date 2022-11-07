@@ -8,7 +8,6 @@ chatbot <- function(file="outputs.json", find=1) {
   find <- as.numeric(find)
   answers <- docs['answers'][[1]]
   if (length(answers) < find){
-    output <- "-1" #"Sorry, no more information available.  Please search for another device!"
   }else{
     output <- answers %>% as_tibble() %>% 
       arrange(desc(score)) %>% slice(find) %>% 
@@ -17,11 +16,11 @@ chatbot <- function(file="outputs.json", find=1) {
   return (output)
 }
 
-build_chatbot <- function(device, ques, find=1){
+build_chatbot <- function(devices, ques, find=1){
   # connect to model file and generate json object
-  url = "http://flask:5000/"
-  body = list(question = ques, device = device)
-  resp<-GET(url, path = "prediction", params = body)
+  url = "http://flask:5000/prediction"
+  body = list(question = ques, device = devices)
+  resp<-GET(url, query = body)
   # t1<-content(resp, type="application/json")
   # file = "outputs.json"
   file = http_type(resp)
