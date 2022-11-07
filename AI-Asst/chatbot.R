@@ -26,6 +26,7 @@ build_chatbot <- function(device, ques, find=1){
   # file = "outputs.json"
   file = http_type(resp)
   output <- chatbot(file, find)
+  return (output)
 }
 
 check_device <- function(device, productlist){
