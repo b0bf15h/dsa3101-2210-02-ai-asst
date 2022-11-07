@@ -196,7 +196,7 @@ server <- function(input,output,session){
     if (length(btn)==0){btn <<- input$insertBtn}
     else btn <<- btn+1
     id <- paste0('txt', btn)
-    text <- input$txt
+    text <- input$ChooseProd
     insertUI(
       selector = '#placeholder',
       ui = tags$div(
