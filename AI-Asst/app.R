@@ -122,9 +122,7 @@ ui <- dashboardPage(
                   id = "else",
                   hidden(
                     actionButton("elseBtn", "Show me something else", class = "btn btn-sm")
-                  ),
-                  actionButton("switchBtn", "Search for another device",  class =
-                                 "btn btn-sm")
+                  )
                 )),
                 div(
                   id = 'txt_label',
@@ -191,12 +189,23 @@ server <- function(input,output,session){
   ques <- c()
   btn <- c()
   
+  observeEvent(input$ChooseProd,{
+    choice <- input$ChooseProd
+    device <<- c(text, input$ChooseProd)
+    insertUI(
+      selector = '#placeholder',
+      ui = tags$div(
+        tags$b(renderText({paste("Jarvik: ",choice)})),
+        tags$p(renderText({paste("Jarvik: ", "Great! What is your question?")}))
+      )
+    )
+  })
   
   observeEvent(input$insertBtn, {
     if (length(btn)==0){btn <<- input$insertBtn}
     else btn <<- btn+1
     id <- paste0('txt', btn)
-    text <- input$ChooseProd
+    text <- input$txt
     insertUI(
       selector = '#placeholder',
       ui = tags$div(
@@ -259,24 +268,6 @@ server <- function(input,output,session){
       #updateActionButton(session, "elseBtn", label = "Another Question")
       ques <<- c()
     }else{ques <<- c(ques[1], ques)}
-    inserted <<- c(id, inserted)
-  })
-  
-  observeEvent(input$switchBtn,{
-    btn <<- btn + 1
-    id <- paste0('txt', btn)
-    insertUI(
-      selector = '#placeholder',
-      ui = tags$div(
-        tags$hr(),
-        tags$b(renderText({paste("Jarvik: ","What device are you looking for?")})),
-        tags$br(),
-        device <<- c(),
-        ques <<- c(),
-        id = id
-      )
-    )
-    hide("else")
     inserted <<- c(id, inserted)
   })
   
