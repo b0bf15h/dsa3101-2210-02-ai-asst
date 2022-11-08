@@ -1,12 +1,11 @@
-import os
-from haystack.document_stores import ElasticsearchDocumentStore
-from haystack.utils import convert_files_to_docs
-from haystack.nodes import PreProcessor
 from flask import Flask, request, jsonify, send_file, render_template
 from werkzeug.utils import secure_filename
 
 import time
 time.sleep(30)
+
+import os
+from haystack.document_stores import ElasticsearchDocumentStore
 
 # Get the host where Elasticsearch is running, default to localhost
 host = os.environ.get("ELASTICSEARCH_HOST", "localhost")
