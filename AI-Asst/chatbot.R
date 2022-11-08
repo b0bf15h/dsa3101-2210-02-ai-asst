@@ -3,29 +3,35 @@ library(httr)
 
 
 ######## answer1 #########
-chatbot <- function(file="outputs.json", find=1) {
+chatbot <- function(file="answers1.js", find=1) {
   docs <- jsonlite::fromJSON(file)
   find <- as.numeric(find)
+  
   answers <- docs['answers'][[1]]
   if (length(answers) < find){
+    output <- "-1" #"Sorry, no more information available.  Please search for another device!"
   }else{
     output <- answers %>% as_tibble() %>% 
       arrange(desc(score)) %>% slice(find) %>% 
       select("answer") %>% as.character()
+    source <- answers %>% as_tibble() %>% 
+      arrange(desc(score)) %>% slice(find) %>% 
+      select("meta") 
   }
-  return (output)
+  return (list(answer = output,source = source))
 }
+
 
 build_chatbot <- function(devices, ques, find=1){
   # connect to model file and generate json object
-  url = "http://flask:5000/prediction"
-  body = list(question = ques, device = devices)
-  resp<-GET(url, query = body)
-  # t1<-content(resp, type="application/json")
-  # file = "outputs.json"
-  file = http_type(resp)
-  output <- chatbot(file, find)
-  return (output)
+  url =  "http://flask:5000/prediction"
+  body = list(questions = ques, device = devices)
+  resp <- GET(url, query = body)
+  # file = http_type(resp)
+  # file <- content(resp, type="application/json")
+  # file = "answers1.js"
+  return(chatbot(file, find))
+  
 }
 
 check_device <- function(device, productlist){

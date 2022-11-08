@@ -8,6 +8,7 @@ library(shinyjs)
 library(DT)
 library(shinydashboard)
 library(shinyBS)
+library(dplyr)
 
 source("chatbot.R",local=T)
 productlist <- c('Watchman', 'Atriclip', 'Lariat')
@@ -108,22 +109,20 @@ ui <- dashboardPage(
   # ---------------------------- BODY ----------------------------
   
   dashboardBody(
+    useShinyjs(),
     tags$head(tags$script(HTML(jscode))),
     `data-proxy-click` = "insertBtn",
     tabItems(
     
     tabItem(tabName = "aboutproduct",
             fluidRow(
-              hidden(wellPanel(
+              wellPanel(
                 id = 'chat',
                 style = "bottom:70px",
                 tags$div(id = 'placeholder', style = "max-height: 800px; overflow: auto"),
                 hidden(tags$div(
-                  id = "else",
-                  hidden(
-                    actionButton("elseBtn", "Show me something else", class = "btn btn-sm")
-                  )
-                )),
+                  id = "else", actionButton("elseBtn", "Show me something else", class = "btn btn-sm"),
+                  actionButton("sourceBtn","Show me the source of the answer",  class="btn btn-sm"))),
                 div(
                   id = 'txt_label',
                   textInput('txt', h4("How can I help you?") , placeholder = "Enter your questions"),
@@ -132,7 +131,7 @@ ui <- dashboardPage(
                   actionButton('clearBtn', 'Clear')
                 ),
                 tags$br()
-              )),
+              ),
               offset = 9)
     ), 
     
@@ -150,8 +149,7 @@ ui <- dashboardPage(
                                               label = "Submit")))),
             )
     )
-  ),
-
+  )
   )
 )
           
@@ -182,23 +180,26 @@ server <- function(input,output,session){
     updateSelectInput(session,"ChooseProd",choices= productlist)
   })
   
-  
 # ---------------------------- JARVIK CHATBOT ----------------------------
   inserted <- c()
   device <- c()
   ques <- c()
   btn <- c()
+  source <- c()
   
   observeEvent(input$ChooseProd,{
     choice <- input$ChooseProd
     device <<- c(text, input$ChooseProd)
+    id <- paste0('txt', choice)
     insertUI(
       selector = '#placeholder',
       ui = tags$div(
         tags$b(renderText({paste("Jarvik: ",choice)})),
-        tags$p(renderText({paste("Jarvik: ", "Great! What is your question?")}))
+        tags$p(renderText({paste("Jarvik: ", "Great! What is your question?")})),
+        id=id
       )
     )
+    inserted <<- c(id, inserted)
   })
   
   observeEvent(input$insertBtn, {
@@ -211,34 +212,20 @@ server <- function(input,output,session){
       ui = tags$div(
         tags$b(paste('You: ', text)),
         if(text!=""){
-          # check whether previous device inserted
-          if (length(device) == 0) {found <- check_device(text, productlist)}
-          else {found <- -1} # Have previous device
-          
-          if(found==0){
-            # Not valid device
-            tags$div(tags$p(renderText({paste("Jarvik: ", "Sorry I do not have infomation for this device!")})),
-                     tags$p(renderText({paste("Jarvik: Please enter another device!")})),
-                     tags$hr())
-          }else if(found != -1){
-            # A valid device found 
-            device <<- c(text, device)
-            tags$p(renderText({paste("Jarvik: ", "Great! What is your question?")}))
-          }else{
-            # Text is the question (after searching for a valid device)
-            ques <<- c(text, ques)
-            answer <- build_chatbot(device, ques, find=1)
-            tags$p(renderText({paste("Jarvik:[", device[length(device)], "]", answer)}))
-          }
+          ques <<- c(text, ques)
+          output <- build_chatbot(device, ques, find=1)
+          answer <- output$answer
+          source <<- output$source 
+          tags$p(renderText({paste("Jarvik:[", device[length(device)], "]", answer)}))
         }else{
           tags$p(renderText({paste("Jarvik: ", "I am not sure I understand you fully")}))
         },
         id = id
       )
     )
-    if(text!="" && found == -1){
+    
+    if(text!=""){
       show("else")
-      show("elseBtn")
     }else{hide("else")}
     
     updateTextInput(session, "txt",  value= "")
@@ -248,10 +235,11 @@ server <- function(input,output,session){
   observeEvent(input$elseBtn,{
     btn <<- btn + 1
     id <- paste0('txt', btn)
-    answer <- build_chatbot(device, ques[1], input$elseBtn+1)
+    output <- build_chatbot(device, ques[1], input$elseBtn+1)
+    answer <- output$answer
+    source <<- output$source 
     insertUI(
       selector = '#placeholder',
-      ## wrap element in a div with id for ease of removal
       ui = tags$div(
         tags$b(paste('You: ','Show me something else about "', ques[1], '"')),
         if (answer != -1){tags$p(renderText({paste("Jarvik:[", device[length(device)], "]", answer)}))}
@@ -264,16 +252,26 @@ server <- function(input,output,session){
       )
     )
     if (answer == -1){
-      hide("elseBtn")
-      #updateActionButton(session, "elseBtn", label = "Another Question")
+      hide("else")
       ques <<- c()
     }else{ques <<- c(ques[1], ques)}
     inserted <<- c(id, inserted)
   })
   
-  observeEvent(input$removeBtn, {
+  observeEvent(input$sourceBtn,{
     btn <<- btn + 1
     id <- paste0('txt', btn)
+    insertUI(
+      selector = '#placeholder',
+      ui = tags$div(
+        tags$p(renderText({paste("Jarvik: ", source)})),
+        id = id
+      )
+    )
+    inserted <<- c(id, inserted)
+  })
+  
+  observeEvent(input$removeBtn, {
     removeUI(
       selector = paste0('#', inserted[1]),
     )
