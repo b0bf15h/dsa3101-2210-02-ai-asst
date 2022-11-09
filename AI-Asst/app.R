@@ -38,7 +38,7 @@ customSentence <- function(numItems,type) {
 }
 
 dropdownMenuCustom <- function (..., type = c("messages", "notifications", "tasks"), 
-                                    badgeStatus = "primary", icon = NULL, .list = NULL, customSentence = customSentence) 
+                                badgeStatus = "primary", icon = NULL, .list = NULL, customSentence = customSentence) 
 {
   type <- match.arg(type)
   if (!is.null(badgeStatus)) shinydashboard:::validateStatus(badgeStatus)
@@ -80,6 +80,29 @@ dropdownMenuCustom <- function (..., type = c("messages", "notifications", "task
 }
 
 
+#TEST BOX FUNCTION
+
+upload_box <- box(title = "Upload Data",
+                  status = "info", solidHeader = TRUE, width = 12,
+                  
+                  fluidRow(
+                    column(10, h4(icon("upload"),"Upload a PDF file containing information about your medical device"))),
+                  fluidRow(
+                    column(6, textInput("device_in_file",
+                                        "Input the name of your product",
+                                        placeholder = "Name of product",
+                                        width = "95%")),
+                    column(6, fileInput("file1",
+                                        label = "Select a file",
+                                        accept = ".pdf",
+                                        width = "95%"))),
+                  fluidRow( align = "center",
+                    column(12, actionButton("submit",
+                                           label = "Click here to submit!",
+                                           width = '900px'))))
+
+
+
 ui <- dashboardPage(
   
   # ---------------------------- HEADER ----------------------------
@@ -95,7 +118,7 @@ ui <- dashboardPage(
                          href = "mailto:bleejins@gmail.com"
                        ),
                        icon = icon("comment"))
-    ),
+  ),
   
   # ---------------------------- SIDEBAR ----------------------------
   
@@ -113,46 +136,35 @@ ui <- dashboardPage(
     tags$head(tags$script(HTML(jscode))),
     `data-proxy-click` = "insertBtn",
     tabItems(
-    
-    tabItem(tabName = "aboutproduct",
-            fluidRow(
-              wellPanel(
-                id = 'chat',
-                style = "bottom:70px",
-                tags$div(id = 'placeholder', style = "max-height: 800px; overflow: auto"),
-                hidden(tags$div(
-                  id = "else", actionButton("elseBtn", "Show me something else", class = "btn btn-sm"),
-                  actionButton("sourceBtn","Show me the source of the answer",  class="btn btn-sm"))),
-                div(
-                  id = 'txt_label',
-                  textInput('txt', h4("How can I help you?") , placeholder = "Enter your questions"),
-                  actionButton('insertBtn', 'Insert'),
-                  actionButton('removeBtn', 'Remove'),
-                  actionButton('clearBtn', 'Clear')
+      
+      tabItem(tabName = "aboutproduct",
+              fluidRow(
+                wellPanel(
+                  id = 'chat',
+                  style = "bottom:70px",
+                  tags$div(id = 'placeholder', style = "max-height: 800px; overflow: auto"),
+                  hidden(tags$div(
+                    id = "else", actionButton("elseBtn", "Show me something else", class = "btn btn-sm"),
+                    actionButton("sourceBtn","Show me the source of the answer",  class="btn btn-sm"))),
+                  div(
+                    id = 'txt_label',
+                    textInput('txt', h4("How can I help you?") , placeholder = "Enter your questions"),
+                    actionButton('insertBtn', 'Insert'),
+                    actionButton('removeBtn', 'Remove'),
+                    actionButton('clearBtn', 'Clear')
+                  ),
+                  tags$br()
                 ),
-                tags$br()
-              ),
-              offset = 9)
-    ), 
-    
-    tabItem(tabName = "uploadnew",
-            fluidRow(
-              column(10, tags$h1(strong("Upload a PDF file containing information about your medical device"),style = "font-size:20px"),
-                     fluidRow(
-                       column(10, textInput("device_in_file",
-                                           "Please input the name of your product",
-                                           placeholder = "Name of your product")),
-                       column(10, fileInput("file1",
-                                           label="Select a file", 
-                                           accept=".pdf")),
-                       column(10,actionButton("submit",
-                                              label = "Submit")))),
-            )
+                offset = 9)
+      ), 
+      
+      tabItem(tabName = "uploadnew",
+              fluidRow(upload_box)
+      )
     )
   )
-  )
 )
-          
+
 
 # ---------------------------- FUNCTIONS ----------------------------
 
@@ -165,22 +177,22 @@ server <- function(input,output,session){
                          icon = icon("comment")),
                 menuItem("Upload New File",
                          tabName = "uploadnew",
-                         icon = icon("upload"))
-
-                )
+                         icon = icon("folder"))
+                
+    )
   })
-
   
   
   
-# ---------------------------- UPLOAD FILE ----------------------------
+  
+  # ---------------------------- UPLOAD FILE ----------------------------
   
   observeEvent(input$submit, {
     productlist <<- c(productlist, str_split(input$device_in_file, ',')[[1]])
     updateSelectInput(session,"ChooseProd",choices= productlist)
   })
   
-# ---------------------------- JARVIK CHATBOT ----------------------------
+  # ---------------------------- JARVIK CHATBOT ----------------------------
   inserted <- c()
   device <- c()
   ques <- c()
