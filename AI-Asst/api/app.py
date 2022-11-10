@@ -2,14 +2,22 @@ from flask import Flask, request, jsonify, send_file, render_template
 from werkzeug.utils import secure_filename
 
 import time
-time.sleep(30)
-
 import os
 from haystack.document_stores import ElasticsearchDocumentStore
 
-# Get the host where Elasticsearch is running, default to localhost
-host = os.environ.get("ELASTICSEARCH_HOST", "localhost")
-document_store = ElasticsearchDocumentStore(host=host, username="", password="", index="document")
+connected = False
+count = 0
+while not connected and count < 5:
+    try:
+        time.sleep(30)
+        # Get the host where Elasticsearch is running, default to localhost
+        host = os.environ.get("ELASTICSEARCH_HOST", "localhost")
+        document_store = ElasticsearchDocumentStore(host=host, username="", password="", index="document")
+        connected = True
+    except:
+        print("Could not connect to documentstore. Retrying.")
+        count += 1
+
 
 
 from haystack.nodes import BM25Retriever
