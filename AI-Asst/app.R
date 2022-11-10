@@ -46,8 +46,8 @@ dropdownMenuCustom <- function (..., type = c("messages", "notifications", "task
   lapply(items, shinydashboard:::tagAssert, type = "li")
   dropdownClass <- paste0("dropdown ", type, "-menu")
   if (is.null(icon)) {
-    icon <- switch(type, messages = shiny::icon("envelope"), 
-                   notifications = shiny::icon("warning"), tasks = shiny::icon("tasks"))
+    icon <- switch(type, messages = shiny::icon("envelope", verify_fa = F), 
+                   notifications = shiny::icon("warning", verify_fa = F), tasks = shiny::icon("tasks"))
   }
   numItems <- length(items)
   if (is.null(badgeStatus)) {
