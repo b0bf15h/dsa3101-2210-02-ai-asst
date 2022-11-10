@@ -12,6 +12,7 @@ library(dplyr)
 
 source("chatbot.R",local=T)
 productlist <- c('Watchman', 'Atriclip', 'Lariat')
+upload_endpoint <- "http://flask:5000/upload"
 
 # ---------------------------- HELPER FUNCTIONS (temp) ----------------------------
 
@@ -190,6 +191,14 @@ server <- function(input,output,session){
   observeEvent(input$submit, {
     productlist <<- c(productlist, str_split(input$device_in_file, ',')[[1]])
     updateSelectInput(session,"ChooseProd",choices= productlist)
+    print(1)
+    pdf_file <- upload_file(input$file1$datapath)
+    print(2)
+    args <- list(file = pdf_file, device = input$device_in_file)
+    print(3)
+    POST(upload_endpoint, body = args)
+    
+    # print(class(input$file1$datapath))
   })
   
   # ---------------------------- JARVIK CHATBOT ----------------------------
