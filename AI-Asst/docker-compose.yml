@@ -3,6 +3,10 @@ services:
     build: .
     ports: 
       - "3838:3838"
+    volumes:
+      - type: bind
+        source: .
+        target: /home/app
 
   flask:
     build: ./api
