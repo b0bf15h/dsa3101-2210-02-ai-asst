@@ -4,6 +4,8 @@ from werkzeug.utils import secure_filename
 import time
 import os
 from haystack.document_stores import ElasticsearchDocumentStore
+from haystack.utils import convert_files_to_docs
+from haystack.nodes import PreProcessor
 
 connected = False
 count = 0
