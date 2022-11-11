@@ -13,6 +13,7 @@ library(dplyr)
 source("chatbot.R",local=T)
 productlist <- c('Watchman', 'Atriclip', 'Lariat')
 upload_endpoint <- "http://flask:5000/upload"
+options(shiny.maxRequestSize=40*1024^2) 
 
 # ---------------------------- HELPER FUNCTIONS (temp) ----------------------------
 
@@ -191,14 +192,19 @@ server <- function(input,output,session){
   observeEvent(input$submit, {
     productlist <<- c(productlist, str_split(input$device_in_file, ',')[[1]])
     updateSelectInput(session,"ChooseProd",choices= productlist)
-    print(1)
+    # read in pdf file input, and send post request
     pdf_file <- upload_file(input$file1$datapath)
-    print(2)
     args <- list(file = pdf_file, device = input$device_in_file)
-    print(3)
-    POST(upload_endpoint, body = args)
-    
-    # print(class(input$file1$datapath))
+    x <- POST(upload_endpoint, body = args)
+    # check status code and handle error
+    if (x$status_code == 200) {
+      print("yes")
+      # render pop-up for successful upload
+    }
+    else {
+    # render pop-up for failure
+    # file is encrypted, please contact support 
+    }
   })
   
   # ---------------------------- JARVIK CHATBOT ----------------------------
