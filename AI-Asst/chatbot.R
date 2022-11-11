@@ -24,13 +24,18 @@ chatbot <- function(file="answers1.js", find=1) {
 
 build_chatbot <- function(devices, ques, find=1){
   # connect to model file and generate json object
-  url =  "http://flask:5000/prediction"
-  body = list(questions = ques, device = devices)
+  url <-  "http://flask:5000/prediction"
+  body <- list(questions = ques[[length(ques)]], device = devices[[length(devices)]])
+  # print question and devices
+  print(ques)
+  print(devices)
   resp <- GET(url, query = body)
+  # print structure of response
+  print(str(resp))
   # file = http_type(resp)
   # file <- content(resp, type="application/json")
   # file = "answers1.js"
-  return(chatbot(file, find))
+  # return(chatbot(file, find))
   
 }
 
