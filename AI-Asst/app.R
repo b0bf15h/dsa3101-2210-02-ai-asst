@@ -12,8 +12,7 @@ library(dplyr)
 library(shinyalert)
 
 source("chatbot.R",local=T)
-productlist <- c('Watchman', 'Atriclip', 'Lariat')
-success_stat <- " "
+productlist <- c('Watchman', 'Atriclip', 'Lariat', '')
 upload_endpoint <- "http://flask:5000/upload"
 options(shiny.maxRequestSize=40*1024^2) 
 
@@ -134,7 +133,8 @@ ui <- dashboardPage(
   dashboardSidebar(
     selectInput("ChooseProd",
                 label = "Learn More About",
-                choices = productlist),
+                choices = productlist,
+                ),
     sidebarMenuOutput("menu")
   ),
   
@@ -206,7 +206,7 @@ server <- function(input,output,session){
   
   observeEvent(input$submit, {
     productlist <<- c(productlist, str_split(input$device_in_file, ',')[[1]])
-    updateSelectInput(session,"ChooseProd",choices= productlist)
+    updateSelectInput(session,"ChooseProd",choices= productlist, selected = input$ChooseProd)
     # read in pdf file input, and send post request
     pdf_file <- upload_file(input$file1$datapath)
     args <- list(file = pdf_file, device = input$device_in_file)
@@ -247,11 +247,13 @@ server <- function(input,output,session){
   source <- c()
   file <- c()
   found <- 1
+  just_cleared <- F
   
   observeEvent(input$ChooseProd,{
     choice <- input$ChooseProd
     device <<- c(input$ChooseProd)
     id <- paste0('txt', choice)
+    if (!just_cleared) {
     insertUI(
       selector = '#placeholder',
       ui = tags$div(
@@ -260,6 +262,9 @@ server <- function(input,output,session){
         id=id
       )
     )
+      
+    }
+    just_cleared <<- F
     inserted <<- c(id, inserted)
   })
   
@@ -339,34 +344,41 @@ server <- function(input,output,session){
   })
   
   observeEvent(input$removeBtn, {
-    removeUI(
+    if (input$ChooseProd != '' && just_cleared) {
+      removeUI(
       selector = paste0('#', inserted[1]),
     )
     hide("else")
     inserted <<- inserted[-1]
+    }
   })
   
   observeEvent(input$clearBtn, {
+    if (input$ChooseProd != '') {
     removeUI(
       selector = paste0('#', inserted),
       multiple = T
     )
     hide("else")
     inserted <<- c()
-    device <<- c(input$ChooseProd)
+    device <<- c()
     ques <<- c()
-    choice <- input$ChooseProd
-    id <- paste0('txt', choice)
+    id <- paste0('txt')
     insertUI(
       selector = '#placeholder',
       ui = tags$div(
-        tags$b(renderText({paste("Jarvik: ",choice)})),
-        tags$p(renderText({paste("Jarvik: ", "Great! What is your question?")})),
+        tags$b(renderText({paste("Jarvik: Please select a device!")})),
+        # tags$p(renderText({paste("Jarvik: ", "Great! What is your question?")})),
         id=id
       )
     )
-    
+    inserted <<- c(id)
+    print(length(inserted))
+    just_cleared <<- T
+    updateSelectizeInput(session,"ChooseProd",choices= productlist, selected = "")
+  }
   })
+  
 }
 
 # ---------------------------- RUN APP ----------------------------
