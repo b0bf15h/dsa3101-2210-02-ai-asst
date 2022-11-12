@@ -110,8 +110,7 @@ ui <- dashboardPage(
   
   # ---------------------------- HEADER ----------------------------
   dashboardHeader(
-    titleWidth = 550,
-    title = "AI Assistant for Medical Sales Representative",
+    title = span(tagList(icon("robot")," Jarvik")),
     dropdownMenuCustom(type = 'message',
                        customSentence = customSentence,
                        messageItem(
@@ -162,11 +161,15 @@ ui <- dashboardPage(
       ), 
       
       tabItem(tabName = "uploadnew",
-              fluidRow(upload_box)
-      )
+              fluidRow(upload_box)),
+      
+      tabItem(tabName = "statstab",
+              fluidRow(valueBoxOutput("successrate"))
     )
   )
 )
+)
+
 
 
 # ---------------------------- FUNCTIONS ----------------------------
@@ -180,7 +183,10 @@ server <- function(input,output,session){
                          icon = icon("comment")),
                 menuItem("Upload New File",
                          tabName = "uploadnew",
-                         icon = icon("folder"))
+                         icon = icon("folder")),
+                menuItem("Statistics",
+                         tabName = "statstab",
+                         icon = icon("statistics"))
                 
     )
   })
@@ -209,6 +215,19 @@ server <- function(input,output,session){
     }
   })
   
+  # ---------------------------- STATS ----------------------------
+  
+  output$successrate <- renderValueBox ({
+    valueBox(
+      paste0('Success Rate of ', input$ChooseProd),
+      paste0(GET("http://flask:5000/prediction", 
+                 list(question = "What is the success rate of the procedure?",
+                      device = input$ChooseProd))),
+      color = "green"
+    )
+  })
+  
+
   # ---------------------------- JARVIK CHATBOT ----------------------------
   inserted <- c()
   device <- c()
