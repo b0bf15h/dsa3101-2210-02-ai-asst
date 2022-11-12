@@ -9,6 +9,7 @@ library(DT)
 library(shinydashboard)
 library(shinyBS)
 library(dplyr)
+library(shinyalert)
 
 source("chatbot.R",local=T)
 productlist <- c('Watchman', 'Atriclip', 'Lariat')
@@ -36,7 +37,7 @@ $(function() {
 '
 
 customSentence <- function(numItems,type) {
-  paste("Feedback & suggestions")
+  paste("Feedback & Suggestions")
 }
 
 dropdownMenuCustom <- function (..., type = c("messages", "notifications", "tasks"), 
@@ -199,11 +200,12 @@ server <- function(input,output,session){
     # check status code and handle error
     if (x$status_code == 200) {
       print("yes")
-      # render pop-up for successful upload
+      shinyalert(title = "You have successfully uploaded your file!", type = 'success')
     }
     else {
     # render pop-up for failure
     # file is encrypted, please contact support 
+      shinyalert(title = "Your file is encrypted, please contact support", type = 'error')
     }
   })
   
