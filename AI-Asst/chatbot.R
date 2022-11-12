@@ -38,7 +38,7 @@ build_chatbot <- function(devices, ques, find=1){
   print(class(file))
   data <- toJSON(file)
   write(data, "output.json")
-  return(chatbot(file, find))
+  return(chatbot(data, find))
 }
 
 check_device <- function(device, productlist){
