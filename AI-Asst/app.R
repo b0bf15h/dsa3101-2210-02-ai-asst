@@ -9,6 +9,7 @@ library(DT)
 library(shinydashboard)
 library(shinyBS)
 library(dplyr)
+library(shinyalert)
 
 source("chatbot.R",local=T)
 productlist <- c('Watchman', 'Atriclip', 'Lariat')
@@ -199,14 +200,12 @@ server <- function(input,output,session){
     # check status code and handle error
     if (x$status_code == 200) {
       print("yes")
-      session$sendCustomMessage(type = "testmessage",
-                                message = 'Your file has been uploaded successfully!')
+      shinyalert(title = "You have successfully uploaded your file!", type = "success")
     }
     else {
     # render pop-up for failure
     # file is encrypted, please contact support
-      session$sendCustomMessage(type = "testmessage",
-                                message = 'Your file is encrypted. Please contact support')
+      shinyalert(title = 'Your file is encrypted. Please contact support', type = "fail")
     }
   })
   
