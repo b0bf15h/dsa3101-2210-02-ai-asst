@@ -37,8 +37,12 @@ $(function() {
 });
 '
 
-customSentence <- function(numItems,type) {
+customSentence1 <- function(numItems,type) {
   paste("Feedback & Suggestions")
+}
+
+customSentence2 <- function(numItems,type) {
+  paste("The accuracy of our responses will be further improved when the document store is populated with more data.")
 }
 
 dropdownMenuCustom <- function (..., type = c("messages", "notifications", "tasks"), 
@@ -113,14 +117,16 @@ ui <- dashboardPage(
   dashboardHeader(
     title = span(tagList(icon("robot")," Jarvik")),
     dropdownMenuCustom(type = 'message',
-                       customSentence = customSentence,
+                       customSentence = customSentence1,
                        messageItem(
                          from = "bleejins@gmail.com", 
                          message = "",
                          icon = icon("envelope"),
                          href = "mailto:bleejins@gmail.com"
                        ),
-                       icon = icon("comment"))
+                       icon = icon("comment")),
+    dropdownMenuCustom(type = 'notification',
+                       customSentence = customSentence2)
   ),
   
   # ---------------------------- SIDEBAR ----------------------------
@@ -165,8 +171,8 @@ ui <- dashboardPage(
               fluidRow(upload_box)),
       
       tabItem(tabName = "statstab",
-              fluidRow(h1(strong("Statistics")),align = 'center'),
-              fluidRow(valueBoxOutput("successrate"))
+              fluidRow(column(12,h1(strong("Statistics")),align = 'center')),
+              fluidRow(valueBoxOutput("successrate", width = 5))
     )
   )
 )
@@ -231,6 +237,7 @@ server <- function(input,output,session){
       color = "green"
     )
   })
+  
 
   # ---------------------------- JARVIK CHATBOT ----------------------------
   inserted <- c()
@@ -257,7 +264,6 @@ server <- function(input,output,session){
   })
   
   observeEvent(input$insertBtn, {
-    beginning <- Sys.time()
     if (length(btn)==0){btn <<- input$insertBtn}
     else btn <<- btn+1
     id <- paste0('txt', btn)
@@ -272,9 +278,7 @@ server <- function(input,output,session){
           answer <- str_to_sentence(output[[1]]$answer)
           source <<- output[[1]]$source
           file <<- output$data
-          end <- Sys.time()
           tags$p(renderText({paste("Jarvik:[", device[length(device)], "]", answer)}))
-          tags$p(renderText(end - beginning))
         }else{
           tags$p(renderText({paste("Jarvik: ", "I am not sure I understand you fully")}))
         },
