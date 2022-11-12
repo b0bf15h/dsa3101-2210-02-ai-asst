@@ -165,6 +165,7 @@ ui <- dashboardPage(
               fluidRow(upload_box)),
       
       tabItem(tabName = "statstab",
+              fluidRow(h1(strong("Statistics")),align = 'center'),
               fluidRow(valueBoxOutput("successrate"))
     )
   )
@@ -179,15 +180,15 @@ server <- function(input,output,session){
   
   output$menu <- renderMenu({ 
     sidebarMenu(id = "sidebarmenu",
-                menuItem("Speak to Jarvik",
+                menuItem(" Speak to Jarvik",
                          tabName = "aboutproduct",
                          icon = icon("comment")),
-                menuItem("Upload New File",
+                menuItem(" Upload New File",
                          tabName = "uploadnew",
-                         icon = icon("folder")),
-                menuItem("Statistics",
+                         icon = icon("folder-open")),
+                menuItem(" Statistics",
                          tabName = "statstab",
-                         icon = icon("statistics"))
+                         icon = icon("chart-simple"))
                 
     )
   })
@@ -216,12 +217,17 @@ server <- function(input,output,session){
   })
   
   # ---------------------------- STATS ----------------------------
+  
   output$successrate <- renderValueBox ({
     valueBox(
-      paste0('Success Rate of ', input$ChooseProd),
-      paste0(chatbot(toJSON(content(GET("http://flask:5000/prediction", 
-                 query = list(question = "What is the success rate of the procedure?",
-                      device = input$ChooseProd)))),find = 1)$answer[[1]]),
+      fluidRow(column(12,h1(strong(
+        paste0('Success Rate of ', input$ChooseProd)),style = "font-size:30px"),align = 'center')),
+      fluidRow(column(12,h1(strong(
+        paste0(chatbot(toJSON(content(GET("http://flask:5000/prediction",
+                                          query = list(question = "What is the success rate of the procedure?",
+                                                       device = input$ChooseProd)))),find = 1)$answer[[1]])), 
+        style = "font-size: 80px"),align = 'center')),
+      icon = icon('thumbs-up'),
       color = "green"
     )
   })
@@ -251,6 +257,7 @@ server <- function(input,output,session){
   })
   
   observeEvent(input$insertBtn, {
+    beginning <- Sys.time()
     if (length(btn)==0){btn <<- input$insertBtn}
     else btn <<- btn+1
     id <- paste0('txt', btn)
@@ -265,7 +272,9 @@ server <- function(input,output,session){
           answer <- str_to_sentence(output[[1]]$answer)
           source <<- output[[1]]$source
           file <<- output$data
+          end <- Sys.time()
           tags$p(renderText({paste("Jarvik:[", device[length(device)], "]", answer)}))
+          tags$p(renderText(end - beginning))
         }else{
           tags$p(renderText({paste("Jarvik: ", "I am not sure I understand you fully")}))
         },
