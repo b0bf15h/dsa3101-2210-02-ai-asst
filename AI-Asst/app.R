@@ -246,7 +246,7 @@ server <- function(input,output,session){
           ques <<- c(text, ques)
           output <- build_chatbot(device, c(text), find=1)
           print(output)
-          answer <- output[[1]]$answer
+          answer <- str_to_sentence(output[[1]]$answer)
           source <<- output[[1]]$source
           file <<- output$data
           tags$p(renderText({paste("Jarvik:[", device[length(device)], "]", answer)}))
@@ -271,7 +271,7 @@ server <- function(input,output,session){
     found <<- found+1
     #output <- build_chatbot(device, ques[1], find=found)
     output <- chatbot(file, find=found)
-    answer <- output$answer
+    answer <- str_to_sentence(output$answer)
     source <<- output$source 
     insertUI(
       selector = '#placeholder',
@@ -300,7 +300,9 @@ server <- function(input,output,session){
     insertUI(
       selector = '#placeholder',
       ui = tags$div(
-        tags$p(renderText({paste("Jarvik: ", list(source))})),
+        tags$p(renderText({paste('Jarvik: The device is "', source[[1]], '"')})),
+        tags$p(renderText({paste('Jarvik: The source of the document is "', source[[2]],'"')})),
+        tags$p(renderText({paste('Jarvik: You can find the information on page "', source[[3]],'"')})),
         id = id
       )
     )
