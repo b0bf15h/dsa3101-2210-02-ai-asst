@@ -215,6 +215,8 @@ server <- function(input,output,session){
   ques <- c()
   btn <- c()
   source <- c()
+  file <- c()
+  found <- 1
   
   observeEvent(input$ChooseProd,{
     choice <- input$ChooseProd
@@ -241,11 +243,13 @@ server <- function(input,output,session){
       ui = tags$div(
         tags$b(paste('You: ', text)),
         if(text!=""){
-          ques <<- c(text)
-          output <- build_chatbot(device, ques, find=1)
-          # answer <- output$answer
-          # source <<- output$source 
-          # tags$p(renderText({paste("Jarvik:[", device[length(device)], "]", answer)}))
+          ques <<- c(text, ques)
+          output <- build_chatbot(device, c(text), find=1)
+          print(output)
+          answer <- output[[1]]$answer
+          source <<- output[[1]]$source
+          file <<- output$data
+          tags$p(renderText({paste("Jarvik:[", device[length(device)], "]", answer)}))
         }else{
           tags$p(renderText({paste("Jarvik: ", "I am not sure I understand you fully")}))
         },
@@ -264,7 +268,9 @@ server <- function(input,output,session){
   observeEvent(input$elseBtn,{
     btn <<- btn + 1
     id <- paste0('txt', btn)
-    output <- build_chatbot(device, ques[1], input$elseBtn+1)
+    found <<- found+1
+    #output <- build_chatbot(device, ques[1], find=found)
+    output <- chatbot(file, find=found)
     answer <- output$answer
     source <<- output$source 
     insertUI(
@@ -281,6 +287,7 @@ server <- function(input,output,session){
       )
     )
     if (answer == -1){
+      found <<- 1
       hide("else")
       ques <<- c()
     }else{ques <<- c(ques[1], ques)}
@@ -293,7 +300,7 @@ server <- function(input,output,session){
     insertUI(
       selector = '#placeholder',
       ui = tags$div(
-        tags$p(renderText({paste("Jarvik: ", source)})),
+        tags$p(renderText({paste("Jarvik: ", list(source))})),
         id = id
       )
     )
@@ -306,22 +313,6 @@ server <- function(input,output,session){
     )
     hide("else")
     inserted <<- inserted[-1]
-    
-    insertUI(
-      selector = paste0('#', inserted[1]),
-      ui = tags$div(
-        if (length(ques) == 0){
-          device <<- c()
-          tags$b(renderText({paste("Jarvik: ","Please enter the device you want to search for")}))
-          tags$br()
-        }else{
-          ques <<- ques[-1]
-          tags$b(renderText({paste('Jarvik: ', 'You can also ask questions about "', 
-                                   device[length(device)], '"')}))
-          tags$br()
-        }
-      )
-    )
   })
   
   observeEvent(input$clearBtn, {
