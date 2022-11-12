@@ -353,7 +353,7 @@ server <- function(input,output,session){
     )
     hide("else")
     inserted <<- c()
-    device <<- c()
+    device <<- c(input$ChooseProd)
     ques <<- c()
   })
 }
