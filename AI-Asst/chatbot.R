@@ -1,10 +1,10 @@
 library(jsonlite)
 library(httr)
 
-
 ######## answer1 #########
 chatbot <- function(file="answers1.js", find=1) {
   docs <- jsonlite::fromJSON(file)
+  help(fromJSON)
   find <- as.numeric(find)
   
   answers <- docs['answers'][[1]]
@@ -31,12 +31,14 @@ build_chatbot <- function(devices, ques, find=1){
   print(devices)
   resp <- GET(url, query = body)
   # print structure of response
-  print(str(resp))
   # file = http_type(resp)
-  # file <- content(resp, type="application/json")
-  # file = "answers1.js"
-  # return(chatbot(file, find))
-  
+  file <- content(resp, type="application/json")
+  print(str(file))
+  print("----------------------")
+  print(class(file))
+  data <- toJSON(file)
+  write(data, "output.json")
+  return(chatbot(file, find))
 }
 
 check_device <- function(device, productlist){
