@@ -13,6 +13,7 @@ library(shinyalert)
 
 source("chatbot.R",local=T)
 productlist <- c('Watchman', 'Atriclip', 'Lariat')
+success_stat <- " "
 upload_endpoint <- "http://flask:5000/upload"
 options(shiny.maxRequestSize=40*1024^2) 
 
@@ -205,7 +206,6 @@ server <- function(input,output,session){
     x <- POST(upload_endpoint, body = args)
     # check status code and handle error
     if (x$status_code == 200) {
-      print("yes")
       shinyalert(title = "You have successfully uploaded your file!", type = 'success')
     }
     else {
@@ -216,17 +216,15 @@ server <- function(input,output,session){
   })
   
   # ---------------------------- STATS ----------------------------
-  
   output$successrate <- renderValueBox ({
     valueBox(
       paste0('Success Rate of ', input$ChooseProd),
-      paste0(GET("http://flask:5000/prediction", 
-                 list(question = "What is the success rate of the procedure?",
-                      device = input$ChooseProd))),
+      paste0(chatbot(toJSON(content(GET("http://flask:5000/prediction", 
+                 query = list(question = "What is the success rate of the procedure?",
+                      device = input$ChooseProd)))),find = 1)$answer[[1]]),
       color = "green"
     )
   })
-  
 
   # ---------------------------- JARVIK CHATBOT ----------------------------
   inserted <- c()
@@ -264,7 +262,6 @@ server <- function(input,output,session){
         if(text!=""){
           ques <<- c(text, ques)
           output <- build_chatbot(device, c(text), find=1)
-          print(output)
           answer <- str_to_sentence(output[[1]]$answer)
           source <<- output[[1]]$source
           file <<- output$data
