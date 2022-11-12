@@ -355,6 +355,17 @@ server <- function(input,output,session){
     inserted <<- c()
     device <<- c(input$ChooseProd)
     ques <<- c()
+    choice <- input$ChooseProd
+    id <- paste0('txt', choice)
+    insertUI(
+      selector = '#placeholder',
+      ui = tags$div(
+        tags$b(renderText({paste("Jarvik: ",choice)})),
+        tags$p(renderText({paste("Jarvik: ", "Great! What is your question?")})),
+        id=id
+      )
+    )
+    
   })
 }
 
