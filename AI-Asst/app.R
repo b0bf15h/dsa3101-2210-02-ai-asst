@@ -48,8 +48,8 @@ dropdownMenuCustom <- function (..., type = c("messages", "notifications", "task
   lapply(items, shinydashboard:::tagAssert, type = "li")
   dropdownClass <- paste0("dropdown ", type, "-menu")
   if (is.null(icon)) {
-    icon <- switch(type, messages = shiny::icon("envelope"), 
-                   notifications = shiny::icon("warning"), tasks = shiny::icon("tasks"))
+    icon <- switch(type, messages = shiny::icon("envelope", verify_fa = F), 
+                   notifications = shiny::icon("warning", verify_fa = F), tasks = shiny::icon("tasks"))
   }
   numItems <- length(items)
   if (is.null(badgeStatus)) {
@@ -216,7 +216,7 @@ server <- function(input,output,session){
   
   observeEvent(input$ChooseProd,{
     choice <- input$ChooseProd
-    device <<- c(text, input$ChooseProd)
+    device <<- c(input$ChooseProd)
     id <- paste0('txt', choice)
     insertUI(
       selector = '#placeholder',
@@ -239,11 +239,11 @@ server <- function(input,output,session){
       ui = tags$div(
         tags$b(paste('You: ', text)),
         if(text!=""){
-          ques <<- c(text, ques)
+          ques <<- c(text)
           output <- build_chatbot(device, ques, find=1)
-          answer <- output$answer
-          source <<- output$source 
-          tags$p(renderText({paste("Jarvik:[", device[length(device)], "]", answer)}))
+          # answer <- output$answer
+          # source <<- output$source 
+          # tags$p(renderText({paste("Jarvik:[", device[length(device)], "]", answer)}))
         }else{
           tags$p(renderText({paste("Jarvik: ", "I am not sure I understand you fully")}))
         },
