@@ -303,7 +303,6 @@ server <- function(input,output,session){
     btn <<- btn + 1
     id <- paste0('txt', btn)
     found <<- found+1
-    #output <- build_chatbot(device, ques[1], find=found)
     output <- chatbot(file, find=found)
     answer <- str_to_sentence(output$answer)
     source <<- output$source 
@@ -344,12 +343,27 @@ server <- function(input,output,session){
   })
   
   observeEvent(input$removeBtn, {
-    if (input$ChooseProd != '' && just_cleared) {
-      removeUI(
+  #if(input$ChooseProd != '' && just_cleared){
+        removeUI(
       selector = paste0('#', inserted[1]),
     )
     hide("else")
     inserted <<- inserted[-1]
+   # }
+    if (length(inserted)==0) {
+      device <<- c()
+      ques <<- c()
+      id <- paste0('txt')
+      insertUI(
+        selector = '#placeholder',
+        ui = tags$div(
+          tags$b(renderText({paste("Jarvik: Please select a device!")})),
+          tags$br(),
+          id=id
+        )
+      )
+      just_cleared <<- T
+      updateSelectizeInput(session,"ChooseProd",choices= productlist, selected = "")
     }
   })
   
@@ -368,11 +382,11 @@ server <- function(input,output,session){
       selector = '#placeholder',
       ui = tags$div(
         tags$b(renderText({paste("Jarvik: Please select a device!")})),
-        # tags$p(renderText({paste("Jarvik: ", "Great! What is your question?")})),
+        tags$br(),
         id=id
       )
     )
-    inserted <<- c(id)
+    #inserted <<- c(id)
     print(length(inserted))
     just_cleared <<- T
     updateSelectizeInput(session,"ChooseProd",choices= productlist, selected = "")
