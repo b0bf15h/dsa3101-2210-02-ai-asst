@@ -26,7 +26,8 @@ chatbot <- function(file="output.json", find=1) {
 
 
 build_chatbot <- function(devices, ques, find=1){
-  # connect to model file and generate json object
+  # connect to prediction endpoint from app.py
+  # rerieve JSON object to be processed in chatbot()
   url <-  "http://flask:5000/prediction"
   body <- list(question = ques[[length(ques)]], device = devices[[length(devices)]])
   resp <- GET(url, query = body)

@@ -11,13 +11,19 @@ library(shinyBS)
 library(dplyr)
 library(shinyalert)
 
+# use chatbot program in the same directory
 source("chatbot.R",local=T)
+# pre-defined product list
 productlist <- c('Watchman', 'Atriclip', 'Lariat', '')
+
 upload_endpoint <- "http://flask:5000/upload"
+
+# arbitrarily decided on 40MB as max-upload size, changeable
 options(shiny.maxRequestSize=40*1024^2) 
 
-# ---------------------------- HELPER FUNCTIONS (temp) ----------------------------
+# ---------------------------- HELPER FUNCTIONS ----------------------------
 
+# code for mapping enter key to clicking on the insert button
 jscode <- '
 $(function() {
   var $els = $("[data-proxy-click]");
@@ -87,7 +93,7 @@ dropdownMenuCustom <- function (..., type = c("messages", "notifications", "task
 }
 
 
-#TEST BOX FUNCTION
+# BOX FUNCTION
 
 upload_box <- box(title = "Upload Data",
                   status = "info", solidHeader = TRUE, width = 12,
@@ -95,6 +101,7 @@ upload_box <- box(title = "Upload Data",
                   fluidRow(
                     column(10, h4(icon("upload"),"Upload a PDF file containing information about your medical device"))),
                   fluidRow(
+                    # file name input, need to label the file upload with device name
                     column(6, textInput("device_in_file",
                                         "Input the name of your product",
                                         placeholder = "Name of product",
@@ -204,6 +211,9 @@ server <- function(input,output,session){
   
   # ---------------------------- UPLOAD FILE ----------------------------
   
+  # On clicking submit, add new device into select input and 
+  # upload file to backend document store
+  # pop-up box to confirm success of upload
   observeEvent(input$submit, {
     productlist <<- c(productlist, str_split(input$device_in_file, ',')[[1]])
     updateSelectInput(session,"ChooseProd",choices= productlist, selected = input$ChooseProd)
@@ -224,6 +234,7 @@ server <- function(input,output,session){
   
   # ---------------------------- STATS ----------------------------
   
+  # based on the current selected product, query the stats and display it
   output$successrate <- renderValueBox ({
     valueBox(
       fluidRow(column(12,h1(strong(
@@ -344,6 +355,8 @@ server <- function(input,output,session){
     inserted <<- c(id, inserted)
   })
   
+  # remove deletes the last conversation
+  # doesn't work if you have not asked a question or if you cleared conversation
   observeEvent(input$removeBtn, {
   if(input$ChooseProd != '' && !just_cleared){
         removeUI(
@@ -355,10 +368,11 @@ server <- function(input,output,session){
     if(length(ques) ==0) {
       just_cleared <<- T
       }
-    print(just_cleared)
     }
   })
   
+  # clears the entire chat history and empties the select input, 
+  # need to select a product before u can ask questions again
   observeEvent(input$clearBtn, {
     if (input$ChooseProd != '') {
     removeUI(
@@ -378,8 +392,6 @@ server <- function(input,output,session){
         id=id
       )
     )
-    #inserted <<- c(id)
-    print(length(inserted))
     just_cleared <<- T
     updateSelectizeInput(session,"ChooseProd",choices= productlist, selected = "")
   }
