@@ -158,6 +158,7 @@ ui <- dashboardPage(
                 wellPanel(
                   id = 'chat',
                   style = "bottom:70px",
+                  # The division to show the inputs and outputs
                   tags$div(id = 'placeholder', style = "max-height: 800px; overflow: auto"),
                   hidden(tags$div(
                     id = "else", actionButton("elseBtn", "Show me something else", class = "btn btn-sm"),
@@ -251,15 +252,18 @@ server <- function(input,output,session){
   
 
   # ---------------------------- JARVIK CHATBOT ----------------------------
-  inserted <- c()
-  device <- c()
-  ques <- c()
-  btn <- c()
-  source <- c()
-  file <- c()
-  found <- 1
-  just_cleared <- T
+  # Global variables in Jarvik chatbot
+  inserted <- c() # ensure insertUI and removeUI work properly
+  device <- c() # store the chosen device information
+  ques <- c() # store the questions information
+  btn <- c() # record each action
+  source <- c() # record the source information
+  file <- c() # save the returned json file of our model so that 'else' and 'source' will not send query to back-end
+  found <- 1 # record what answer to show (the X-highest score)
+  just_cleared <- T # record whether the window is just cleared or users haven't ask questions for the device
   
+  # show the selected product name based on what you selected in the dropdown list
+  # if you just cleared the window, you have to select the product in the dropdown list before you enter questions
   observeEvent(input$ChooseProd,{
     choice <- input$ChooseProd
     device <<- c(input$ChooseProd)
@@ -279,6 +283,8 @@ server <- function(input,output,session){
     inserted <<- c(id, inserted)
   })
   
+  # insert your question and display the question and answer in the window (also show 'elseBtn' and 'sourceBtn')
+  # if you did not enter any question, it will give a default sentence (not show 'elseBtn' and 'sourceBtn')
   observeEvent(input$insertBtn, {
     if (length(btn)==0){btn <<- input$insertBtn}
     else btn <<- btn+1
@@ -311,6 +317,8 @@ server <- function(input,output,session){
     inserted <<- c(id, inserted)
   })
   
+  # show the next possible answer of the same question
+  # if there is no other available answers, it will give a default answer and hide this button
   observeEvent(input$elseBtn,{
     btn <<- btn + 1
     id <- paste0('txt', btn)
@@ -339,6 +347,7 @@ server <- function(input,output,session){
     inserted <<- c(id, inserted)
   })
   
+  # show the device, the name of the document and the page where the answer is found
   observeEvent(input$sourceBtn,{
     btn <<- btn + 1
     id <- paste0('txt', btn)
