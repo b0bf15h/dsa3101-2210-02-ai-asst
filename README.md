@@ -1,5 +1,7 @@
 # dsa3101-2210-02-ai-asst
 
+AI Assistant Application for medical device sales reps
+
 Final application codes are found in AI-Asst directory
 Modelling_team directory contains codes/files used by modelling team for development
 while UI_team directory contains codes/files used by front-end team for development
