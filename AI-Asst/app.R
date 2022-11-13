@@ -9,9 +9,10 @@ library(DT)
 library(shinydashboard)
 library(shinyBS)
 library(dplyr)
+library(shinyalert)
 
 source("chatbot.R",local=T)
-productlist <- c('Watchman', 'Atriclip', 'Lariat')
+productlist <- c('Watchman', 'Atriclip', 'Lariat', '')
 upload_endpoint <- "http://flask:5000/upload"
 options(shiny.maxRequestSize=40*1024^2) 
 
@@ -35,8 +36,12 @@ $(function() {
 });
 '
 
-customSentence <- function(numItems,type) {
-  paste("Feedback & suggestions")
+customSentence1 <- function(numItems,type) {
+  paste("Feedback & Suggestions")
+}
+
+customSentence2 <- function(numItems,type) {
+  paste("The accuracy of our responses will be further improved when the document store is populated with more data.")
 }
 
 dropdownMenuCustom <- function (..., type = c("messages", "notifications", "tasks"), 
@@ -109,17 +114,18 @@ ui <- dashboardPage(
   
   # ---------------------------- HEADER ----------------------------
   dashboardHeader(
-    titleWidth = 550,
-    title = "AI Assistant for Medical Sales Representative",
+    title = span(tagList(icon("robot")," Jarvik")),
     dropdownMenuCustom(type = 'message',
-                       customSentence = customSentence,
+                       customSentence = customSentence1,
                        messageItem(
                          from = "bleejins@gmail.com", 
                          message = "",
                          icon = icon("envelope"),
                          href = "mailto:bleejins@gmail.com"
                        ),
-                       icon = icon("comment"))
+                       icon = icon("comment")),
+    dropdownMenuCustom(type = 'notification',
+                       customSentence = customSentence2)
   ),
   
   # ---------------------------- SIDEBAR ----------------------------
@@ -127,7 +133,8 @@ ui <- dashboardPage(
   dashboardSidebar(
     selectInput("ChooseProd",
                 label = "Learn More About",
-                choices = productlist),
+                choices = productlist,
+                ),
     sidebarMenuOutput("menu")
   ),
   
@@ -161,11 +168,16 @@ ui <- dashboardPage(
       ), 
       
       tabItem(tabName = "uploadnew",
-              fluidRow(upload_box)
-      )
+              fluidRow(upload_box)),
+      
+      tabItem(tabName = "statstab",
+              fluidRow(column(12,h1(strong("Statistics")),align = 'center')),
+              fluidRow(valueBoxOutput("successrate", width = 5))
     )
   )
 )
+)
+
 
 
 # ---------------------------- FUNCTIONS ----------------------------
@@ -174,12 +186,15 @@ server <- function(input,output,session){
   
   output$menu <- renderMenu({ 
     sidebarMenu(id = "sidebarmenu",
-                menuItem("Speak to Jarvik",
+                menuItem(" Speak to Jarvik",
                          tabName = "aboutproduct",
                          icon = icon("comment")),
-                menuItem("Upload New File",
+                menuItem(" Upload New File",
                          tabName = "uploadnew",
-                         icon = icon("folder"))
+                         icon = icon("folder-open")),
+                menuItem(" Statistics",
+                         tabName = "statstab",
+                         icon = icon("chart-simple"))
                 
     )
   })
@@ -191,33 +206,54 @@ server <- function(input,output,session){
   
   observeEvent(input$submit, {
     productlist <<- c(productlist, str_split(input$device_in_file, ',')[[1]])
-    updateSelectInput(session,"ChooseProd",choices= productlist)
+    updateSelectInput(session,"ChooseProd",choices= productlist, selected = input$ChooseProd)
     # read in pdf file input, and send post request
     pdf_file <- upload_file(input$file1$datapath)
     args <- list(file = pdf_file, device = input$device_in_file)
     x <- POST(upload_endpoint, body = args)
     # check status code and handle error
     if (x$status_code == 200) {
-      print("yes")
-      # render pop-up for successful upload
+      shinyalert(title = "You have successfully uploaded your file!", type = 'success')
     }
     else {
     # render pop-up for failure
     # file is encrypted, please contact support 
+      shinyalert(title = "Your file is encrypted, please contact support", type = 'error')
     }
   })
   
+  # ---------------------------- STATS ----------------------------
+  
+  output$successrate <- renderValueBox ({
+    valueBox(
+      fluidRow(column(12,h1(strong(
+        paste0('Success Rate of ', input$ChooseProd)),style = "font-size:30px"),align = 'center')),
+      fluidRow(column(12,h1(strong(
+        paste0(chatbot(toJSON(content(GET("http://flask:5000/prediction",
+                                          query = list(question = "What is the success rate of the procedure?",
+                                                       device = input$ChooseProd)))),find = 1)$answer[[1]])), 
+        style = "font-size: 80px"),align = 'center')),
+      icon = icon('thumbs-up'),
+      color = "green"
+    )
+  })
+  
+
   # ---------------------------- JARVIK CHATBOT ----------------------------
   inserted <- c()
   device <- c()
   ques <- c()
   btn <- c()
   source <- c()
+  file <- c()
+  found <- 1
+  just_cleared <- T
   
   observeEvent(input$ChooseProd,{
     choice <- input$ChooseProd
     device <<- c(input$ChooseProd)
     id <- paste0('txt', choice)
+    if (device!="") {
     insertUI(
       selector = '#placeholder',
       ui = tags$div(
@@ -226,6 +262,9 @@ server <- function(input,output,session){
         id=id
       )
     )
+      
+    }
+    just_cleared <<- T
     inserted <<- c(id, inserted)
   })
   
@@ -239,18 +278,20 @@ server <- function(input,output,session){
       ui = tags$div(
         tags$b(paste('You: ', text)),
         if(text!=""){
-          ques <<- c(text)
-          output <- build_chatbot(device, ques, find=1)
-          # answer <- output$answer
-          # source <<- output$source 
-          # tags$p(renderText({paste("Jarvik:[", device[length(device)], "]", answer)}))
+          ques <<- c(text, ques)
+          output <- build_chatbot(device, c(text), find=1)
+          answer <- str_to_sentence(output[[1]]$answer)
+          source <<- output[[1]]$source
+          file <<- output$data
+          tags$p(renderText({paste("Jarvik:[", device[length(device)], "]", answer)}))
         }else{
+          ques <<- c("-1", ques)
           tags$p(renderText({paste("Jarvik: ", "I am not sure I understand you fully")}))
         },
         id = id
       )
     )
-    
+    just_cleared <<- F
     if(text!=""){
       show("else")
     }else{hide("else")}
@@ -262,8 +303,9 @@ server <- function(input,output,session){
   observeEvent(input$elseBtn,{
     btn <<- btn + 1
     id <- paste0('txt', btn)
-    output <- build_chatbot(device, ques[1], input$elseBtn+1)
-    answer <- output$answer
+    found <<- found+1
+    output <- chatbot(file, find=found)
+    answer <- str_to_sentence(output$answer)
     source <<- output$source 
     insertUI(
       selector = '#placeholder',
@@ -279,9 +321,10 @@ server <- function(input,output,session){
       )
     )
     if (answer == -1){
+      found <<- 1
       hide("else")
-      ques <<- c()
-    }else{ques <<- c(ques[1], ques)}
+    }
+    ques <<- c(ques[1], ques)
     inserted <<- c(id, inserted)
   })
   
@@ -291,38 +334,33 @@ server <- function(input,output,session){
     insertUI(
       selector = '#placeholder',
       ui = tags$div(
-        tags$p(renderText({paste("Jarvik: ", source)})),
+        tags$p(renderText({paste('Jarvik: The device is "', source[[1]], '"')})),
+        tags$p(renderText({paste('Jarvik: The source of the document is "', source[[2]],'"')})),
+        tags$p(renderText({paste('Jarvik: You can find the information on page "', source[[3]],'"')})),
         id = id
       )
     )
+    ques <<- c(ques[1], ques)
     inserted <<- c(id, inserted)
   })
   
   observeEvent(input$removeBtn, {
-    removeUI(
+  if(input$ChooseProd != '' && !just_cleared){
+        removeUI(
       selector = paste0('#', inserted[1]),
     )
     hide("else")
     inserted <<- inserted[-1]
-    
-    insertUI(
-      selector = paste0('#', inserted[1]),
-      ui = tags$div(
-        if (length(ques) == 0){
-          device <<- c()
-          tags$b(renderText({paste("Jarvik: ","Please enter the device you want to search for")}))
-          tags$br()
-        }else{
-          ques <<- ques[-1]
-          tags$b(renderText({paste('Jarvik: ', 'You can also ask questions about "', 
-                                   device[length(device)], '"')}))
-          tags$br()
-        }
-      )
-    )
+    ques <<- ques[-1]
+    if(length(ques) ==0) {
+      just_cleared <<- T
+      }
+    print(just_cleared)
+    }
   })
   
   observeEvent(input$clearBtn, {
+    if (input$ChooseProd != '') {
     removeUI(
       selector = paste0('#', inserted),
       multiple = T
@@ -331,7 +369,22 @@ server <- function(input,output,session){
     inserted <<- c()
     device <<- c()
     ques <<- c()
+    id <- paste0('txt')
+    insertUI(
+      selector = '#placeholder',
+      ui = tags$div(
+        tags$b(renderText({paste("Jarvik: Please select a device!")})),
+        tags$br(),
+        id=id
+      )
+    )
+    #inserted <<- c(id)
+    print(length(inserted))
+    just_cleared <<- T
+    updateSelectizeInput(session,"ChooseProd",choices= productlist, selected = "")
+  }
   })
+  
 }
 
 # ---------------------------- RUN APP ----------------------------
