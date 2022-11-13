@@ -247,13 +247,13 @@ server <- function(input,output,session){
   source <- c()
   file <- c()
   found <- 1
-  just_cleared <- F
+  just_cleared <- T
   
   observeEvent(input$ChooseProd,{
     choice <- input$ChooseProd
     device <<- c(input$ChooseProd)
     id <- paste0('txt', choice)
-    if (!just_cleared) {
+    if (device!="") {
     insertUI(
       selector = '#placeholder',
       ui = tags$div(
@@ -264,7 +264,7 @@ server <- function(input,output,session){
     )
       
     }
-    just_cleared <<- F
+    just_cleared <<- T
     inserted <<- c(id, inserted)
   })
   
@@ -285,12 +285,13 @@ server <- function(input,output,session){
           file <<- output$data
           tags$p(renderText({paste("Jarvik:[", device[length(device)], "]", answer)}))
         }else{
+          ques <<- c("-1", ques)
           tags$p(renderText({paste("Jarvik: ", "I am not sure I understand you fully")}))
         },
         id = id
       )
     )
-    
+    just_cleared <<- F
     if(text!=""){
       show("else")
     }else{hide("else")}
@@ -322,8 +323,8 @@ server <- function(input,output,session){
     if (answer == -1){
       found <<- 1
       hide("else")
-      ques <<- c()
-    }else{ques <<- c(ques[1], ques)}
+    }
+    ques <<- c(ques[1], ques)
     inserted <<- c(id, inserted)
   })
   
@@ -339,31 +340,22 @@ server <- function(input,output,session){
         id = id
       )
     )
+    ques <<- c(ques[1], ques)
     inserted <<- c(id, inserted)
   })
   
   observeEvent(input$removeBtn, {
-  #if(input$ChooseProd != '' && just_cleared){
+  if(input$ChooseProd != '' && !just_cleared){
         removeUI(
       selector = paste0('#', inserted[1]),
     )
     hide("else")
     inserted <<- inserted[-1]
-   # }
-    if (length(inserted)==0) {
-      device <<- c()
-      ques <<- c()
-      id <- paste0('txt')
-      insertUI(
-        selector = '#placeholder',
-        ui = tags$div(
-          tags$b(renderText({paste("Jarvik: Please select a device!")})),
-          tags$br(),
-          id=id
-        )
-      )
+    ques <<- ques[-1]
+    if(length(ques) ==0) {
       just_cleared <<- T
-      updateSelectizeInput(session,"ChooseProd",choices= productlist, selected = "")
+      }
+    print(just_cleared)
     }
   })
   
