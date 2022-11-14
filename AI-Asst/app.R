@@ -239,7 +239,6 @@ server <- function(input,output,session){
     x <- POST(upload_endpoint, body = args)
     # check status code and handle error
     if (x$status_code == 200) {
-      print("yes")
       shinyalert(title = "You have successfully uploaded your file!", type = "success")
     }
     else {

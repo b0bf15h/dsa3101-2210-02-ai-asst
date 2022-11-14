@@ -22,7 +22,8 @@ chatbot <- function(file="output.json", find=1) {
     source <- "-1"
   }else{ # find and return the available answer
     answer <- filter_answer[[find]]
-    source <- list(device = filter_device[[find]], docs_name = filter_name[[find]], docs_page = filter_page[[find]])
+    source <- list(device = filter_device[[find]], 
+                   docs_name = filter_name[[find]], docs_page = filter_page[[find]])
   }
   return (list(answer = answer,source = source))
 }
