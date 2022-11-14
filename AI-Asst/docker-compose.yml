@@ -1,8 +1,14 @@
 services:
+  # front-end's web-app
   shiny:
+    # built from Dockerfile found in same directory
     build: .
+    # exposed port
     ports: 
       - "3838:3838"
+    # bind mount to reflect saved code changes, no need to restart container 
+    # source is local directory
+    # target is container directory with scripts
     volumes:
       - type: bind
         source: .
