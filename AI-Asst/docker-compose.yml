@@ -12,17 +12,21 @@ services:
         source: .
         target: /home/app
 
+  # Flask app API
   flask:
     build: ./api
     ports:
       - "5000:5000"
+    # To allow reference to elasticsearch container in flask app
     environment:
     - ELASTICSEARCH_HOST=elasticsearch
-
+  
+  # Document store
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.5.1
     environment:
       - discovery.type=single-node
+    # For persistent data in the document store
     volumes:
       - data01:/usr/share/elasticsearch/data
     ports:
