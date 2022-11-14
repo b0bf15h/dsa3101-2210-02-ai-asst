@@ -41,7 +41,7 @@ $(function() {
   );
 });
 '
-
+#text input for each dropdownmenu header
 customSentence1 <- function(numItems,type) {
   paste("Feedback & Suggestions")
 }
@@ -50,6 +50,7 @@ customSentence2 <- function(numItems,type) {
   paste("The accuracy of our responses will be further improved when the document store is populated with more data.")
 }
 
+#custom dropdownmenu that includes icon for eacch type
 dropdownMenuCustom <- function (..., type = c("messages", "notifications", "tasks"), 
                                 badgeStatus = "primary", icon = NULL, .list = NULL, customSentence = customSentence) 
 {
@@ -93,9 +94,8 @@ dropdownMenuCustom <- function (..., type = c("messages", "notifications", "task
 }
 
 
-# BOX FUNCTION
-
-upload_box <- box(title = "Upload Data On Product of Your Choice",
+# box function that contains the UI of upload file tab
+upload_box <- box(title = "Upload Data on Product of your Choice",
                   status = "info", solidHeader = TRUE, width = 12,
                   
                   fluidRow(
@@ -123,16 +123,21 @@ ui <- dashboardPage(
   
   # ---------------------------- HEADER ----------------------------
   dashboardHeader(
+    #title of dashboard
     title = span(tagList(icon("robot")," Jarvik")),
+    
+    #feedbacks dropdownmenu 
     dropdownMenuCustom(type = 'message',
                        customSentence = customSentence1,
                        messageItem(
                          from = "bleejins@gmail.com", 
                          message = "",
                          icon = icon("envelope"),
-                         href = "mailto:bleejins@gmail.com"
+                         href = "mailto:bleejins@gmail.com" #renders a draft to this email
                        ),
                        icon = icon("comment")),
+    
+    #"app version" notification dropdownmenu
     dropdownMenuCustom(type = 'notification',
                        customSentence = customSentence2)
   ),
@@ -140,10 +145,14 @@ ui <- dashboardPage(
   # ---------------------------- SIDEBAR ----------------------------
   
   dashboardSidebar(
+    
+    #dropdown list of products that are in the dataset
     selectInput("ChooseProd",
                 label = "Learn More About",
                 choices = productlist,
                 ),
+    
+    #menu items that are rendered in the server function
     sidebarMenuOutput("menu")
   ),
   
@@ -152,16 +161,17 @@ ui <- dashboardPage(
   dashboardBody(
     useShinyjs(),
     tags$head(tags$script(HTML(jscode))),
-    `data-proxy-click` = "insertBtn",
+    `data-proxy-click` = "insertBtn", #press "enter" instead of clicking "insert"
     tabItems(
       
+      #chatbot UI
       tabItem(tabName = "aboutproduct",
               fluidRow(
                 wellPanel(
                   id = 'chat',
                   style = "bottom:70px",
                   # The division to show the inputs and outputs
-                  tags$div(id = 'placeholder', style = "max-height: 800px; overflow: auto"),
+                  tags$div(id = 'placeholder', style = "max-height: 800px; overflow: auto"), #hardcode max height to ensure the conversation does not overflow
                   hidden(tags$div(
                     id = "else", actionButton("elseBtn", "Show me something else", class = "btn btn-sm"),
                     actionButton("sourceBtn","Show me the source of the answer",  class="btn btn-sm"))),
@@ -177,12 +187,14 @@ ui <- dashboardPage(
                 offset = 9)
       ), 
       
+      #uploadfile page UI
       tabItem(tabName = "uploadnew",
               fluidRow(upload_box)),
       
+      #Statistics page UI
       tabItem(tabName = "statstab",
               fluidRow(column(12,h1(strong("Statistics")),align = 'center')),
-              fluidRow(valueBoxOutput("successrate", width = 5))
+              fluidRow(valueBoxOutput("successrate", width = 5)) #UI rendered in server function
     )
   )
 )
@@ -194,6 +206,7 @@ ui <- dashboardPage(
 
 server <- function(input,output,session){
   
+  #display the UI of the sidebarmenu
   output$menu <- renderMenu({ 
     sidebarMenu(id = "sidebarmenu",
                 menuItem(" Speak to Jarvik",
@@ -236,21 +249,6 @@ server <- function(input,output,session){
     }
   })
   
-  observeEvent(input$submit2, {
-    pdf_file <- upload_file(input$file2$datapath)
-    args <- list(file = pdf_file, device = input$device_in_file)
-    x <- POST(upload_endpoint, body = args)
-    # check status code and handle error
-    if (x$status_code == 200) {
-      print("yes")
-      shinyalert(title = "You have successfully uploaded your file!", type = "success")
-    }
-    else {
-      # render pop-up for failure
-      # file is encrypted, please contact support
-      shinyalert(title = 'Your file is encrypted. Please contact support', type = "fail")
-    }
-  })
   
   # ---------------------------- STATS ----------------------------
   
@@ -261,7 +259,7 @@ server <- function(input,output,session){
         paste0('Success Rate of ', input$ChooseProd)),style = "font-size:30px"),align = 'center')),
       fluidRow(column(12,h1(strong(
         paste0(chatbot(toJSON(content(GET("http://flask:5000/prediction",
-                                          query = list(question = "What is the success rate of the procedure?",
+                                          query = list(question = "What is the success rate of the procedure?", #querying the answer to this question
                                                        device = input$ChooseProd)))),find = 1)$answer[[1]])), 
         style = "font-size: 80px"),align = 'center')),
       icon = icon('thumbs-up'),
