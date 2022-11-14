@@ -1,6 +1,7 @@
 services:
   # front-end's web-app
   shiny:
+    # build from Dockerfile in current local directory
     build: .
     ports: 
       - "3838:3838"
