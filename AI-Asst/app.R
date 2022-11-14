@@ -95,7 +95,7 @@ dropdownMenuCustom <- function (..., type = c("messages", "notifications", "task
 
 # BOX FUNCTION
 
-upload_box <- box(title = "Upload Data of New Product",
+upload_box <- box(title = "Upload Data On Product of Your Choice",
                   status = "info", solidHeader = TRUE, width = 12,
                   
                   fluidRow(
@@ -115,26 +115,26 @@ upload_box <- box(title = "Upload Data of New Product",
                                            label = "Click here to submit!",
                                            width = '900px'))))
 
-upload_box2 <- box(title = "Upload Data of Existing Product",
-                  status = "primary", solidHeader = TRUE, width = 12,
-                  
-                  fluidRow(
-                    column(10, h4(icon("upload"),"Upload a PDF file containing information about current medical device"))),
-                  fluidRow(
-                    # file name input, need to label the file upload with device name
-                    column(6, selectInput("ChooseProd",
-                                          label = "Select Existing Product",
-                                          choices = productlist,
-                                          width = "95%")),
-                    column(6, fileInput("file2",
-                                        label = "Select a file",
-                                        accept = ".pdf",
-                                        width = "95%")),
-                  fluidRow( align = "center",
-                            column(12, actionButton("submit2",
-                                                    label = "Click here to submit!",
-                                                    width = '900px')))
-                  ))
+# upload_box2 <- box(title = "Upload Data of Existing Product",
+#                   status = "primary", solidHeader = TRUE, width = 12,
+#                   
+#                   fluidRow(
+#                     column(10, h4(icon("upload"),"Upload a PDF file containing information about current medical device"))),
+#                   fluidRow(
+#                     # file name input, need to label the file upload with device name
+#                     column(6, selectInput("ChooseProd",
+#                                           label = "Select Existing Product",
+#                                           choices = productlist,
+#                                           width = "95%")),
+#                     column(6, fileInput("file2",
+#                                         label = "Select a file",
+#                                         accept = ".pdf",
+#                                         width = "95%")),
+#                   fluidRow( align = "center",
+#                             column(12, actionButton("submit2",
+#                                                     label = "Click here to submit!",
+#                                                     width = '900px')))
+#                   ))
 
 
                     
@@ -200,8 +200,9 @@ ui <- dashboardPage(
       ), 
       
       tabItem(tabName = "uploadnew",
-              fluidRow(upload_box),
-              fluidRow(upload_box2)),
+              fluidRow(upload_box)),
+      # ,
+      #         fluidRow(upload_box2)),
       
       tabItem(tabName = "statstab",
               fluidRow(column(12,h1(strong("Statistics")),align = 'center')),
