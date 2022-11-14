@@ -1,59 +1,42 @@
 library(jsonlite)
 library(httr)
-
+library(dplyr)
 
 ######## answer1 #########
-chatbot <- function(file="answers1.js", find=1) {
+chatbot <- function(file="output.json", find=1) {
   docs <- jsonlite::fromJSON(file)
   find <- as.numeric(find)
   
-  answers <- docs['answers'][[1]]
-  if (length(answers) < find){
-    output <- "-1" #"Sorry, no more information available.  Please search for another device!"
-  }else{
-    output <- answers %>% as_tibble() %>% 
-      arrange(desc(score)) %>% slice(find) %>% 
-      select("answer") %>% as.character()
-    source <- answers %>% as_tibble() %>% 
-      arrange(desc(score)) %>% slice(find) %>% 
-      select("meta") 
+  output <- docs['answers'][[1]]
+  # filter the answer and source (device,name,page)
+  # if there is any NULL answer returned, we will discard that
+  filter_answer <- output %>% as_tibble() %>% select("answer")
+  filter_answer <- Filter(function(x) {x!=""}, filter_answer[[1]])
+  filter_source <- output %>% as_tibble() %>% select("meta")
+  filter_device <- Filter(function(x) {typeof(x)!="NULL"}, filter_source[[1]][[2]])
+  filter_name <- Filter(function(x) {typeof(x)!="NULL"}, filter_source[[1]][[3]])
+  filter_page <- Filter(function(x) {typeof(x)!="NULL"}, filter_source[[1]][[4]])
+  
+  if (length(filter_answer) < find){
+    answer <- "-1" # no more answers available (cannot find the X-highest score answer)
+    source <- "-1"
+  }else{ # find and return the available answer
+    answer <- filter_answer[[find]]
+    source <- list(device = filter_device[[find]], docs_name = filter_name[[find]], docs_page = filter_page[[find]])
   }
-  return (list(answer = output,source = source))
+  return (list(answer = answer,source = source))
 }
 
 
 build_chatbot <- function(devices, ques, find=1){
-  # connect to model file and generate json object
+  # connect to prediction endpoint from app.py
+  # rerieve JSON object to be processed in chatbot()
   url <-  "http://flask:5000/prediction"
-  body <- list(questions = ques[[length(ques)]], device = devices[[length(devices)]])
-  # print question and devices
-  print(ques)
-  print(devices)
+  body <- list(question = ques[[length(ques)]], device = devices[[length(devices)]])
   resp <- GET(url, query = body)
-  # print structure of response
-  print(str(resp))
-  # file = http_type(resp)
-  # file <- content(resp, type="application/json")
-  # file = "answers1.js"
-  # return(chatbot(file, find))
-  
-}
+  file <- content(resp, type="application/json")
+  data <- toJSON(file)
+  return(list(chatbot(data, find),data = data))
 
-check_device <- function(device, productlist){
-  productlist <- unique(productlist[productlist != ""])
-  pos <- which(lapply(paste0("(.*)?", productlist, "(.*)?"), grep, x = device, ignore.case = TRUE) == 1)
-  if (length(pos) == 0){
-    pos <- 0
-  }
-  pos # pos == 0 means "Not Found", any other number means "Found"
 }
-
-# input <- ""
-# cat("Eliza: Hello, I am Eliza!\n")
-# while (TRUE) {
-#   input_num <- readline("You: ")
-#   if (input_num == "quit") break
-#   # num <- readline()
-#   cat("Eliza:", chatbot(find=input_num))
-# }
 
