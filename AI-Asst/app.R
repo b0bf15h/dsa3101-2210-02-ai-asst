@@ -95,7 +95,7 @@ dropdownMenuCustom <- function (..., type = c("messages", "notifications", "task
 
 # BOX FUNCTION
 
-upload_box <- box(title = "Upload Data",
+upload_box <- box(title = "Upload Data of New Product",
                   status = "info", solidHeader = TRUE, width = 12,
                   
                   fluidRow(
@@ -114,6 +114,30 @@ upload_box <- box(title = "Upload Data",
                     column(12, actionButton("submit",
                                            label = "Click here to submit!",
                                            width = '900px'))))
+
+upload_box2 <- box(title = "Upload Data of Existing Product",
+                  status = "primary", solidHeader = TRUE, width = 12,
+                  
+                  fluidRow(
+                    column(10, h4(icon("upload"),"Upload a PDF file containing information about current medical device"))),
+                  fluidRow(
+                    # file name input, need to label the file upload with device name
+                    column(6, selectInput("ChooseProd",
+                                          label = "Select Existing Product",
+                                          choices = productlist,
+                                          width = "95%")),
+                    column(6, fileInput("file2",
+                                        label = "Select a file",
+                                        accept = ".pdf",
+                                        width = "95%")),
+                  fluidRow( align = "center",
+                            column(12, actionButton("submit2",
+                                                    label = "Click here to submit!",
+                                                    width = '900px')))
+                  ))
+
+
+                    
 
 
 
@@ -158,6 +182,7 @@ ui <- dashboardPage(
                 wellPanel(
                   id = 'chat',
                   style = "bottom:70px",
+                  # The division to show the inputs and outputs
                   tags$div(id = 'placeholder', style = "max-height: 800px; overflow: auto"),
                   hidden(tags$div(
                     id = "else", actionButton("elseBtn", "Show me something else", class = "btn btn-sm"),
@@ -175,7 +200,8 @@ ui <- dashboardPage(
       ), 
       
       tabItem(tabName = "uploadnew",
-              fluidRow(upload_box)),
+              fluidRow(upload_box),
+              fluidRow(upload_box2)),
       
       tabItem(tabName = "statstab",
               fluidRow(column(12,h1(strong("Statistics")),align = 'center')),
@@ -223,12 +249,29 @@ server <- function(input,output,session){
     x <- POST(upload_endpoint, body = args)
     # check status code and handle error
     if (x$status_code == 200) {
-      shinyalert(title = "You have successfully uploaded your file!", type = 'success')
+      print("yes")
+      shinyalert(title = "You have successfully uploaded your file!", type = "success")
     }
     else {
     # render pop-up for failure
-    # file is encrypted, please contact support 
-      shinyalert(title = "Your file is encrypted, please contact support", type = 'error')
+    # file is encrypted, please contact support
+      shinyalert(title = 'Your file is encrypted. Please contact support', type = "fail")
+    }
+  })
+  
+  observeEvent(input$submit2, {
+    pdf_file <- upload_file(input$file2$datapath)
+    args <- list(file = pdf_file, device = input$device_in_file)
+    x <- POST(upload_endpoint, body = args)
+    # check status code and handle error
+    if (x$status_code == 200) {
+      print("yes")
+      shinyalert(title = "You have successfully uploaded your file!", type = "success")
+    }
+    else {
+      # render pop-up for failure
+      # file is encrypted, please contact support
+      shinyalert(title = 'Your file is encrypted. Please contact support', type = "fail")
     }
   })
   
@@ -251,15 +294,18 @@ server <- function(input,output,session){
   
 
   # ---------------------------- JARVIK CHATBOT ----------------------------
-  inserted <- c()
-  device <- c()
-  ques <- c()
-  btn <- c()
-  source <- c()
-  file <- c()
-  found <- 1
-  just_cleared <- T
+  # Global variables in Jarvik chatbot
+  inserted <- c() # ensure insertUI and removeUI work properly
+  device <- c() # store the chosen device information
+  ques <- c() # store the questions information
+  btn <- c() # record each action
+  source <- c() # record the source information
+  file <- c() # save the returned json file of our model so that 'else' and 'source' will not send query to back-end
+  found <- 1 # record what answer to show (the X-highest score)
+  just_cleared <- T # record whether the window is just cleared or users haven't ask questions for the device
   
+  # show the selected product name based on what you selected in the dropdown list
+  # if you just cleared the window, you have to select the product in the dropdown list before you enter questions
   observeEvent(input$ChooseProd,{
     choice <- input$ChooseProd
     device <<- c(input$ChooseProd)
@@ -279,6 +325,8 @@ server <- function(input,output,session){
     inserted <<- c(id, inserted)
   })
   
+  # insert your question and display the question and answer in the window (also show 'elseBtn' and 'sourceBtn')
+  # if you did not enter any question, it will give a default sentence (not show 'elseBtn' and 'sourceBtn')
   observeEvent(input$insertBtn, {
     if (length(btn)==0){btn <<- input$insertBtn}
     else btn <<- btn+1
@@ -311,6 +359,8 @@ server <- function(input,output,session){
     inserted <<- c(id, inserted)
   })
   
+  # show the next possible answer of the same question
+  # if there is no other available answers, it will give a default answer and hide this button
   observeEvent(input$elseBtn,{
     btn <<- btn + 1
     id <- paste0('txt', btn)
@@ -339,6 +389,7 @@ server <- function(input,output,session){
     inserted <<- c(id, inserted)
   })
   
+  # show the device, the name of the document and the page where the answer is found
   observeEvent(input$sourceBtn,{
     btn <<- btn + 1
     id <- paste0('txt', btn)
